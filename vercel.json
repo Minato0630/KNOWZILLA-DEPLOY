@@ -7,7 +7,7 @@
   },
   "rewrites": [
     {
-      "source": "/css/**",
+      "source": "/css/(.*)",
       "destination": "/css/**"
     },
     {
