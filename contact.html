@@ -64,6 +64,7 @@
                                  <a class="nav-link" href="contact.html">Contact Us</a>
                               </li>
                            </ul>
+                           <script src="header-session.js"></script>
                         </div>
                      </nav>
                   </div>
@@ -86,25 +87,51 @@
                   <div class="titlepage text_align_left">
                      <h2>Get In Touch</h2>
                   </div>
-                  <form id="contact-form" class="main_form" action="handle_contact.php" method="POST">
+<form id="contact-form" class="main_form">
                      <div class="row">
                          <div class="col-md-12">
-                             <input class="contactus" placeholder="Name" type="text" name="name" required>
+                             <input class="contactus" placeholder="Name" type="text" name="name" id="contact-name" required>
                          </div>
                          <div class="col-md-12">
-                             <input class="contactus" placeholder="Phone Number" type="text" name="phone">
+                             <input class="contactus" placeholder="Phone Number" type="text" name="phone" id="contact-phone">
                          </div>
                          <div class="col-md-12">
-                             <input class="contactus" placeholder="Email" type="email" name="email" required>
+                             <input class="contactus" placeholder="Email" type="email" name="email" id="contact-email" required>
                          </div>
                          <div class="col-md-12">
-                             <textarea class="textarea" placeholder="Message" name="message" required></textarea>
+                             <textarea class="textarea" placeholder="Message" name="message" id="contact-message" required></textarea>
                          </div>
                          <div class="col-md-12">
-                             <button class="send_btn" type="submit">Send Now</button>
+                             <button class="send_btn" type="submit" id="contact-submit">Send Now</button>
                          </div>
                      </div>
                  </form>
+
+                 <script>
+                 document.getElementById('contact-form').addEventListener('submit', async (e) => {
+                     e.preventDefault();
+                     const formData = new FormData(e.target);
+                     const data = Object.fromEntries(formData);
+                     try {
+                     const response = await fetch('/api/contact', {
+                             method: 'POST',
+                             headers: { 'Content-Type': 'application/json' },
+                             body: JSON.stringify(data),
+                             credentials: 'include'
+                         });
+                         const result = await response.json();
+                         if (result.success) {
+                             alert(result.message || 'Contact message sent successfully!');
+                             e.target.reset();
+                         } else {
+                             alert('Error: ' + (result.error || 'Unknown error'));
+                         }
+                     } catch (error) {
+                         console.error('Error:', error);
+                         alert('Error sending message. Please try again.');
+                     }
+                 });
+                 </script>
                  
                </div>
             </div>

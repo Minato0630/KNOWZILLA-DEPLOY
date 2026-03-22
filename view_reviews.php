@@ -1,20 +1,14 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "user_management"; // Updated database name
+require_once __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/config/db.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$reviews = getCollection('reviews');
 
-$sql = "SELECT name, email, message, submitted_at FROM reviews ORDER BY submitted_at DESC";
-$result = $conn->query($sql);
-
+$reviewsCursor = $reviews->find([], ['sort' => ['submitted_at' => -1]]);
 echo "<h2>User Reviews</h2>";
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+$reviewsList = iterator_to_array($reviewsCursor);
+if (count($reviewsList) > 0) {
+    foreach ($reviewsList as $row) {
         echo "<div style='border: 1px solid #ddd; padding: 10px; margin: 10px;'>";
         echo "<strong>" . htmlspecialchars($row['name']) . " (" . htmlspecialchars($row['email']) . ")</strong><br>";
         echo "<p>" . nl2br(htmlspecialchars($row['message'])) . "</p>";
@@ -25,5 +19,5 @@ if ($result->num_rows > 0) {
     echo "No reviews yet!";
 }
 
-$conn->close();
 ?>
+

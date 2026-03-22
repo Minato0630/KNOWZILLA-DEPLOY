@@ -51,7 +51,7 @@
                         <span class="navbar-toggler-icon"></span>
                         </button>
                         <div class="collapse navbar-collapse" id="navbarsExample04">
-                           <ul class="navbar-nav mr-auto">
+                     <ul class="navbar-nav mr-auto">
                               <li class="nav-item">
                                  <a class="nav-link" href="index.html">Home</a>
                               </li>
@@ -64,6 +64,7 @@
                                  <a class="nav-link" href="contact.html">Contact Us</a>
                               </li>
                            </ul>
+                           <script src="header-session.js"></script>
                         </div>
                      </nav>
                   </div>
@@ -102,10 +103,35 @@
                      <a class="logo_footer" href="index.html"></a>
                   </div>
                   <div class="col-md-9">
-                     <form class="newslatter_form" action="subscribe.php" method="POST">
-                        <input class="ente" placeholder="Enter your email" type="email" name="email" required>
-                        <button class="subs_btn" type="submit">SUBSCRIBE</button>
+                     <form class="newslatter_form" id="subscribe-form">
+                        <input class="ente" placeholder="Enter your email" type="email" name="email" id="subscribe-email" required>
+                        <button class="subs_btn" type="submit" id="subscribe-submit">SUBSCRIBE</button>
                     </form>
+
+                    <script>
+                    document.querySelector('.newslatter_form').addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const email = document.getElementById('subscribe-email').value;
+                        try {
+                            const response = await fetch('/api/subscribe', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email }),
+                                credentials: 'include'
+                            });
+                            const result = await response.json();
+                            if (result.success) {
+                                alert(result.message || 'Subscribed successfully!');
+                                document.getElementById('subscribe-email').value = '';
+                            } else {
+                                alert('Error: ' + (result.error || 'Unknown error'));
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Error subscribing. Please try again.');
+                        }
+                    });
+                    </script>
                     
                   </div>
                   <div class="col-md-3 col-sm-6">

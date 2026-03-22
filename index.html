@@ -61,13 +61,34 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="login.html">Login&nbsp;</a>
                                     </li>
-                                    <!-- Display username if logged in -->
-                                    <?php session_start(); if (isset($_SESSION['username'])): ?>
-                                        <li class="nav-item">
-                                            <span class="nav-link">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
-                                        </li>
-                                    <?php endif; ?>
+                                    <!-- Display username if logged in (Node session) -->
+                                    <li class="nav-item" id="user-welcome" style="display: none;">
+                                        <span class="nav-link">Welcome, <span id="username-display"></span></span>
+                                    </li>
+                                    <li class="nav-item" id="logout-link" style="display: none;">
+                                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                                    </li>
                                 </ul>
+                                <script>
+                                async function loadUser() {
+                                    try {
+                                        const res = await fetch('/api/session', { credentials: 'include' });
+                                        const data = await res.json();
+                                        if (data.user) {
+                                            document.getElementById('username-display').textContent = data.user.name;
+                                            document.getElementById('user-welcome').style.display = 'list-item';
+                                            document.getElementById('logout-link').style.display = 'list-item';
+                                        }
+                                    } catch (err) {
+                                        console.log('Not logged in');
+                                    }
+                                }
+                                async function logout() {
+                                    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+                                    location.reload();
+                                }
+                                loadUser();
+                                </script>
                             </div>
                         </nav>
                     </div>
@@ -247,25 +268,47 @@
                     <div class="titlepage text_align_left">
                         <h2>REVIEW&nbsp;</h2>
                     </div>
-                    <form id="review-form" class="main_form" action="submit_review.php" method="POST">
+                    <form id="review-form" class="main_form" >
                         <div class="row">
                             <div class="col-md-12">
-                                <input class="contactus" placeholder="Name" type="text" name="name" required>
+                                <input class="contactus" placeholder="Name" type="text" name="name" id="review-name" required>
                             </div>
                             <div class="col-md-12">
-                                <input class="contactus" placeholder="Phone Number" type="text" name="phone">
+                                <input class="contactus" placeholder="Phone Number" type="text" name="phone" id="review-phone">
                             </div>
                             <div class="col-md-12">
-                                <input class="contactus" placeholder="Email" type="email" name="email" required>
+                                <input class="contactus" placeholder="Email" type="email" name="email" id="review-email" required>
                             </div>
                             <div class="col-md-12">
-                                <textarea class="textarea" placeholder="Message" name="message" required></textarea>
+                                <textarea class="textarea" placeholder="Message" name="message" id="review-message" required></textarea>
                             </div>
                             <div class="col-md-12">
-                                <button class="send_btn" type="submit">Send Now</button>
+                                <button class="send_btn" type="submit" id="review-submit">Send Now</button>
                             </div>
                         </div>
                     </form>
+
+                    <script>
+                        document.getElementById('review-form').addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const formData = new FormData(e.target);
+                            const data = Object.fromEntries(formData);
+                            try {
+                                const res = await fetch('/api/review', {
+                                    method: 'POST',
+                                    headers: {'Content-Type': 'application/json'},
+                                    body: JSON.stringify(data)
+                                });
+                                if (res.redirected) {
+                                    window.location.href = res.url;
+                                } else {
+                                    alert('Review submitted!');
+                                }
+                            } catch (err) {
+                                alert('Error: ' + err);
+                            }
+                        });
+                    </script>
                     
                 </div>
                 <div class="col-md-6">

@@ -1,20 +1,10 @@
 <?php
-$servername = "localhost"; // Change if needed
-$username = "root"; // Your database username
-$password = ""; // Your database password
-$dbname = "user_management"; // Updated database name
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/config/db.php';
 
 // Process form data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $conn->real_escape_string($_POST['email']);
+    $email = $_POST['email'];
 
     // Check if email is empty
     if (empty($email)) {
@@ -23,15 +13,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Insert into database
-    $sql = "INSERT INTO subscriptions (email) VALUES ('$email')";
-
-    if ($conn->query($sql) === TRUE) {
+    $subscriptions = getCollection('subscriptions');
+    try {
+        $subscriptions->insertOne([
+            'email' => $email,
+            'subscribed_at' => new \DateTime()
+        ]);
         // Redirect to about.html with success message
         header("Location: about.html?success=1");
         exit();
-    } else {
-        // If email already exists, prevent duplicate subscription
-        if ($conn->errno == 1062) {
+    } catch (Exception $e) {
+        if (strpos($e->getMessage(), 'E11000') !== false) {
             header("Location: about.html?error=duplicate_email");
         } else {
             header("Location: about.html?error=unknown");
@@ -40,6 +32,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Close connection
-$conn->close();
 ?>
+

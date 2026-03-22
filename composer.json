@@ -1,0 +1,8 @@
+{
+    "name": "knowzilla/project",
+    "description": "Knowzilla Quiz Platform with MongoDB",
+    "require": {
+        "mongodb/mongodb": "^1.21"
+    }
+}
+

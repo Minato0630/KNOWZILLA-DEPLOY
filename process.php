@@ -1,17 +1,9 @@
 <?php
 session_start();
 
-// Database connection
-$host = 'localhost'; // Your database host
-$db = 'user_management'; // Your database name
-$user = 'root'; // Your database username
-$pass = ''; // Your database password
-
-$conn = new mysqli($host, $user, $pass, $db);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/config/.env';
+include __DIR__ . '/config/db.php';
 
 // Handle signup
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
@@ -23,29 +15,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     // Check if registration number already exists
-    $checkSql = "SELECT * FROM users WHERE registration_no = ?";
-    $checkStmt = $conn->prepare($checkSql);
-    $checkStmt->bind_param("s", $registration_no);
-    $checkStmt->execute();
-    $checkResult = $checkStmt->get_result();
+    $users = getCollection('users');
+    $existingUser = $users->findOne(['registration_no' => $registration_no]);
 
-    if ($checkResult->num_rows > 0) {
+    if ($existingUser !== null) {
         echo "Registration number already exists. Please use a different one.";
     } else {
-        $sql = "INSERT INTO users (name, registration_no, email, phone_no, class, password) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssss", $name, $registration_no, $email, $phone_no, $class, $password);
-
-        if ($stmt->execute()) {
-            $_SESSION['username'] = $name; // Store username in session
-            header("Location: index.html"); // Redirect to the index page
-            exit();
-        } else {
-            echo "Error: " . $stmt->error;
-        }
-        $stmt->close();
+        $users->insertOne([
+            'name' => $name,
+            'registration_no' => $registration_no,
+            'email' => $email,
+            'phone_no' => $phone_no,
+            'class' => $class,
+            'password' => $password,
+            'created_at' => new \DateTime()
+        ]);
+        $_SESSION['username'] = $name;
+        header("Location: index.html");
+        exit();
     }
-    $checkStmt->close();
 }
 
 // Handle login
@@ -53,14 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $registration_no = $_POST['registration_no'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users WHERE registration_no = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $registration_no);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $users = getCollection('users');
+    $user = $users->findOne(['registration_no' => $registration_no]);
 
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
+    if ($user !== null) {
         if (password_verify($password, $user['password'])) {
             $_SESSION['username'] = $user['name']; // Store username in session
             header("Location: index.html"); // Redirect to the index page
@@ -71,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     } else {
         echo "No user found with that registration number.";
     }
-    $stmt->close();
 }
 
 // Handle logout
