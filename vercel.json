@@ -8,26 +8,26 @@
   "rewrites": [
     {
       "source": "/css/(.*)",
-      "destination": "/css/**"
+      "destination": "/css/$1"
     },
     {
-      "source": "/js/**",
-      "destination": "/js/**"
+      "source": "/js/(.*)",
+      "destination": "/js/$1"
     },
     {
-      "source": "/images/**",
-      "destination": "/images/**"
+      "source": "/images/(.*)",
+      "destination": "/images/$1"
     },
     {
-      "source": "/fonts/**",
-      "destination": "/fonts/**"
+      "source": "/fonts/(.*)",
+      "destination": "/fonts/$1"
     },
     {
-      "source": "/icon/**",
-      "destination": "/icon/**"
+      "source": "/icon/(.*)",
+      "destination": "/icon/$1"
     },
     {
-      "source": "/api/**",
+      "source": "/api/(.*)",
       "destination": "/api"
     },
     {
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "source": "/js/**",
+      "source": "/js/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "source": "/images/**",
+      "source": "/images/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
