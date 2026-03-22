@@ -1,10 +1,6 @@
 {
   "version": 2,
-  "functions": {
-    "server.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
+
   "rewrites": [
     {
       "source": "/css/(.*)",
@@ -28,13 +24,14 @@
     },
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": "/api/$1"
     },
     {
       "source": "/(.*)",
       "destination": "/server.js"
     }
   ],
+
   "headers": [
     {
       "source": "/css/(.*)",
