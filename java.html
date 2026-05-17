@@ -1,443 +1,517 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java Introduction - Knowzilla</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Java — Knowzilla</title>
+    <meta name="description"
+        content="Learn Java programming basics, features, and test your knowledge with quizzes on Knowzilla.">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="logo.png">
     <style>
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: #1a202c;
-            padding-top: 20px;
-            overflow-y: auto;
+        :root {
+            --accent-1: #e91e63;
+            --accent-2: #f06292;
+            --accent-gradient: linear-gradient(135deg, #e91e63, #f06292);
+            --accent-glow: rgba(233, 30, 99, 0.35);
         }
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 15px;
+
+        .topic-layout {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .topic-sidebar {
+            width: 260px;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-glass);
+            padding: 24px 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .topic-sidebar h3 {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 0 24px;
+            margin-bottom: 16px;
+        }
+
+        .topic-sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 24px;
+            color: var(--text-secondary);
+            font-size: .9rem;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .topic-sidebar a:hover,
+        .topic-sidebar a.active {
+            color: var(--text-primary);
+            background: rgba(108, 92, 231, 0.08);
+            border-left-color: var(--accent-1);
+        }
+
+        .topic-content {
+            margin-left: 260px;
+            padding: 32px 48px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .topic-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, rgba(240, 98, 146, 0.1), rgba(233, 30, 99, 0.05));
+            border: 1px solid rgba(240, 98, 146, 0.15);
+        }
+
+        .topic-header .icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f06292, #e91e63);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .topic-header h1 {
+            font-size: 2rem;
+        }
+
+        .topic-header p {
+            color: var(--text-secondary);
+            font-size: .92rem;
+            margin-top: 4px;
+        }
+
+        .content-section {
+            margin-bottom: 48px;
+            scroll-margin-top: 100px;
+        }
+
+        .content-section h2 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .content-section p,
+        .content-section li {
+            color: var(--text-secondary);
+            font-size: .95rem;
+            line-height: 1.8;
+        }
+
+        .content-section ul {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .content-section ul li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+        }
+
+        .content-section ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-1);
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .88rem;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+
+        .code-block code {
+            white-space: pre;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .feature-card {
+            padding: 24px;
+            border-radius: var(--radius-md);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            border-color: rgba(108, 92, 231, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .feature-card h4 {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .feature-card p {
+            font-size: .85rem;
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .ref-card {
+            padding: 24px;
+            border-radius: var(--radius-md);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .ref-card:hover {
+            border-color: rgba(108, 92, 231, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .3);
+        }
+
+        .ref-card h4 {
+            margin-bottom: 6px;
+        }
+
+        .ref-card p {
+            font-size: .82rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .ref-card a {
+            color: var(--accent-2);
+            font-weight: 600;
+            font-size: .88rem;
+        }
+
+        .test-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            border-radius: var(--radius-md);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            margin-bottom: 12px;
+            transition: var(--transition);
             text-decoration: none;
         }
-        .sidebar a:hover {
-            background: #2d3748;
+
+        .test-card:hover {
+            border-color: rgba(108, 92, 231, 0.3);
+            transform: translateX(6px);
+            background: rgba(108, 92, 231, 0.08);
         }
-        .content {
-            margin-left: 270px;
-            padding: 20px;
+
+        .test-card h4 {
+            color: var(--text-primary);
         }
-        .glow-on-hover:hover {
-     box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
-   }
+
+        .test-card span {
+            color: var(--accent-2);
+            font-weight: 600;
+        }
+
+        .content-img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: var(--radius-md);
+            margin: 16px 0;
+            display: block;
+        }
+
+        /* Mobile sidebar */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 200;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: var(--accent-gradient);
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        @media(max-width:768px) {
+            .topic-sidebar {
+                transform: translateX(-100%);
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            .topic-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .topic-content {
+                margin-left: 0;
+                padding: 24px 16px;
+            }
+
+            .sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .feature-grid,
+            .ref-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
-<body class="font-roboto bg-black text-gray-200">
-    <div class="sidebar">
-        <h2 class="text-white text-center text-2xl mb-4">Navigation</h2>
-        <a href="#introduction">Introduction</a>
-        <a href="#why-learn-java">Why Learn Java?</a>
-        <a href="#java-basics">Java Basics</a>
-        <a href="#java-features">Java Features</a>
-        <a href="#quiz">Java Quiz</a>
-        <a href="#reference">Reference PPTs</a>
-        <a href="#test">Tests</a>
-    </div>
-    <div class="content">
-        <header class="bg-gray-900 text-white p-4 shadow-lg">
-            <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-3xl font-bold">KNOWZILLA <a href="index.html"></a>
-                <a href="index.html"><img src="logo.png" width="30" height="20" alt="Logo"></a>
-                </h1>
-                <nav>
-                    <ul class="flex space-x-6">
-                        <li><a class="hover:underline" href="index.html">Home</a></li>
-                        <li><a class="hover:underline" href="references.html">References</a></li>
-                        <li><a class="hover:underline" href="about.html">About</a></li>
-                    </ul>
-                </nav>
+
+<body>
+
+    <nav class="kz-navbar" id="navbar">
+        <a href="index.html" class="brand"><img src="logo.png" alt="Logo"> KNOWZILLA</a>
+        <ul class="kz-nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li><li id="dashboard-li" style="display:none;"><a href="profile.html">Dashboard</a></li>
+            <li id="user-welcome-li" style="display:none;"><span class="user-badge"><i class="fa-solid fa-user-circle"></i> <span id="username-display"></span></span></li><li id="logout-li" style="display:none;"><a href="#" onclick="logoutUser()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li><li id="login-li"><a href="login.html" class="nav-btn">Login</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </nav>
+
+    <div class="topic-layout">
+        <aside class="topic-sidebar" id="sidebar">
+            <h3>Navigation</h3>
+            <a href="#introduction" class="active"><i class="fa-solid fa-book"></i> Introduction</a>
+            <a href="#why-learn-java"><i class="fa-solid fa-lightbulb"></i> Why Learn Java?</a>
+            <a href="#java-basics"><i class="fa-solid fa-code"></i> Java Basics</a>
+            <a href="#java-features"><i class="fa-solid fa-star"></i> Java Features</a>
+            <a href="#quiz"><i class="fa-solid fa-question-circle"></i> Quiz</a>
+            <a href="#reference"><i class="fa-solid fa-file-powerpoint"></i> References</a>
+            <a href="#test"><i class="fa-solid fa-clipboard-check"></i> Tests</a>
+        </aside>
+
+        <main class="topic-content">
+            <div class="topic-header">
+                <div class="icon"><i class="fa-brands fa-java"></i></div>
+                <div>
+                    <h1>Java Programming</h1>
+                    <p>Object-oriented, platform-independent language for enterprise applications</p>
+                </div>
             </div>
-        </header>
-        <main class="container mx-auto mt-8 p-6 bg-gray-900 shadow-lg rounded-lg">
-            <section id="introduction">
-                <h2 class="text-4xl font-bold mb-4 text-gray-100">Introduction to Java</h2>
-                <p class="text-lg mb-6 text-gray-300">
-                    Java is a high-level, class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible. It is a general-purpose programming language intended to let application developers write once, run anywhere (WORA), meaning that compiled Java code can run on all platforms that support Java without the need for recompilation.
-                   </p>
-                   <p class="text-lg mb-6 text-gray-300">
-                    Java was developed by James Gosling at Sun Microsystems and released in 1995. It has since become one of the most widely used programming languages, particularly for client-server web applications. Java's syntax is similar to C++, but it is designed to be simpler to use and enforce an object-oriented programming model.
-                   </p>
-                   <img alt="Illustration of Java programming language with code snippets and Java logo" class="mx-auto mb-6 rounded-lg shadow-md" height="400" src="https://storage.googleapis.com/a1aa/image/_oh80d_q7I-oZmpqLSrmGp9KVP5WBXviJIZeCOr9-ew.jpg" width="600"/>
-            </section>
-            <br>
 
-
-            <section id="why-learn-java">
-                <h3 class="text-3xl font-bold mb-4 text-gray-100">Why Learn Java?</h3>
-               <ul class="list-disc list-inside mb-6 text-gray-300">
-     <li>
-      Java is one of the most popular programming languages in the world.
-     </li>
-     <li>
-      It is used for developing mobile apps, web apps, desktop apps, games, and much more.
-     </li>
-     <li>
-      Java has a rich API and a vast ecosystem of libraries and frameworks.
-     </li>
-     <li>
-      It is platform-independent at both the source and binary levels.
-     </li>
-     <li>
-      Java has strong memory management and security features.
-     </li>
-     <li>
-      Java is known for its performance, scalability, and reliability.
-     </li>
-     <li>
-      It has a large and active community, which means plenty of resources and support are available.
-     </li>
-    </ul>
+            <section id="introduction" class="content-section">
+                <h2><span class="gradient-text">Introduction</span> to Java</h2>
+                <p>Java is a high-level, class-based, object-oriented programming language that is designed to have as
+                    few implementation dependencies as possible. It is a general-purpose programming language intended
+                    to let application developers write once, run anywhere (WORA), meaning that compiled Java code can
+                    run on all platforms that support Java without the need for recompilation.</p>
+                <br>
+                <p>Java was developed by James Gosling at Sun Microsystems and released in 1995. It has since become one
+                    of the most widely used programming languages, particularly for client-server web applications.
+                    Java's syntax is similar to C++, but it is designed to be simpler to use and enforce an
+                    object-oriented programming model.</p>
+                <img alt="Java programming illustration" class="content-img"
+                    src="https://storage.googleapis.com/a1aa/image/_oh80d_q7I-oZmpqLSrmGp9KVP5WBXviJIZeCOr9-ew.jpg">
             </section>
 
-            <br>
+            <section id="why-learn-java" class="content-section">
+                <h2>Why Learn <span class="gradient-text">Java</span>?</h2>
+                <ul>
+                    <li>Java is one of the most popular programming languages in the world.</li>
+                    <li>It is used for developing mobile apps, web apps, desktop apps, games, and much more.</li>
+                    <li>Java has a rich API and a vast ecosystem of libraries and frameworks.</li>
+                    <li>It is platform-independent at both the source and binary levels.</li>
+                    <li>Java has strong memory management and security features.</li>
+                    <li>Java is known for its performance, scalability, and reliability.</li>
+                    <li>It has a large and active community with plenty of resources and support.</li>
+                </ul>
+            </section>
 
-            <section id="java-basics">
-                <h2 class="text-4xl font-bold mb-4 text-gray-100"> Java Basics</h2>
-                <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-                    <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                     Hello World Example
-                    </h4>
-                    <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto">
-               <code>
-               public class HelloWorld {
-                   public static void main(String[] args) {
-                       System.out.println("Hello, World!");
-                   }
-               }
-               </code>
-                               </pre>
-                   </div>
-                   <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-                    <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                     Simple Addition Example
-                    </h4>
-                    <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto">
-               <code>
-               public class Addition {
-                   public static void main(String[] args) {
-                       int num1 = 5;
-                       int num2 = 10;
-                       int sum = num1 + num2;
-                       System.out.println("The sum is: " + sum);
-                   }
-               }
-               </code>
-                               </pre>
-                   </div>
-                   <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-                    <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                     Simple Loop Example
-                    </h4>
-                    <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto">
-               <code>
-               public class LoopExample {
-                   public static void main(String[] args) {
-                       for (int i = 1; i <= 5; i++) {
-                           System.out.println("Count: " + i);
-                       }
-                   }
-               }
-               </code>
-                               </pre>
-                   </div>
-                  </section>
+            <section id="java-basics" class="content-section">
+                <h2>Java <span class="gradient-text">Basics</span></h2>
+                <h4 style="margin-bottom:8px;">Hello World Example</h4>
+                <div class="code-block"><code>public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}</code></div>
+                <h4 style="margin:20px 0 8px;">Simple Addition Example</h4>
+                <div class="code-block"><code>public class Addition {
+    public static void main(String[] args) {
+        int num1 = 5;
+        int num2 = 10;
+        int sum = num1 + num2;
+        System.out.println("The sum is: " + sum);
+    }
+}</code></div>
+                <h4 style="margin:20px 0 8px;">Simple Loop Example</h4>
+                <div class="code-block"><code>public class LoopExample {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("Count: " + i);
+        }
+    }
+}</code></div>
+            </section>
 
-                  <br>
-                  <section id="java-features">
-                    <h2 class="text-4xl font-bold mb-4 text-gray-100"> Java Features</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-                         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                          Object-Oriented
-                         </h4>
-                         <p class="text-gray-300">
-                          Java is an object-oriented programming language. Everything in Java is an object which makes it easy to extend.
-                         </p>
-                        </div>
-                        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-                         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                          Platform-Independent
-                         </h4>
-                         <p class="text-gray-300">
-                          Java code is compiled into bytecode which can run on any platform using the Java Virtual Machine (JVM).
-                         </p>
-                        </div>
-                        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-                         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                          Simple and Secure
-                         </h4>
-                         <p class="text-gray-300">
-                          Java is designed to be easy to use and secure, with features like garbage collection and exception handling.
-                         </p>
-                        </div>
-                        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-                         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                          Rich API
-                         </h4>
-                         <p class="text-gray-300">
-                          Java provides a rich set of APIs for various tasks, including networking, data structures, and graphical user interfaces.
-                         </p>
-                        </div>
-                       </div>
-                      </section>
-                      <br>
+            <section id="java-features" class="content-section">
+                <h2>Java <span class="gradient-text">Features</span></h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🔷 Object-Oriented</h4>
+                        <p>Everything in Java is an object which makes it easy to extend.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🌐 Platform-Independent</h4>
+                        <p>Java code compiles into bytecode that runs on any JVM platform.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔒 Simple and Secure</h4>
+                        <p>Features like garbage collection and exception handling make Java robust.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📚 Rich API</h4>
+                        <p>Java provides rich APIs for networking, data structures, and GUIs.</p>
+                    </div>
+                </div>
+            </section>
 
-                      <section id="quiz">
-                        <h2 class="text-4xl font-bold mb-4 text-gray-100"> Quiz: Test Your Java Knowledge</h2>
-                        <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-                            <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                             Sample Questions
-                            </h4>
-                            <ul class="list-decimal list-inside text-gray-300">
-                             <li class="mb-4">
-                              <p class="font-bold">
-                               What is the correct syntax for the main method in Java?
-                              </p>
-                              <ul class="list-disc list-inside ml-6">
-                               <li>
-                                <input id="q1a" name="q1" type="radio"/>
-                                <label for="q1a">
-                                 public static void main(String[] args)
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q1b" name="q1" type="radio"/>
-                                <label for="q1b">
-                                 public void main(String[] args)
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q1c" name="q1" type="radio"/>
-                                <label for="q1c">
-                                 static void main(String[] args)
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q1d" name="q1" type="radio"/>
-                                <label for="q1d">
-                                 void main(String[] args)
-                                </label>
-                               </li>
-                              </ul>
-                             </li>
-                             <li class="mb-4">
-                              <p class="font-bold">
-                               Which of the following is not a Java keyword?
-                              </p>
-                              <ul class="list-disc list-inside ml-6">
-                               <li>
-                                <input id="q2a" name="q2" type="radio"/>
-                                <label for="q2a">
-                                 class
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q2b" name="q2" type="radio"/>
-                                <label for="q2b">
-                                 interface
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q2c" name="q2" type="radio"/>
-                                <label for="q2c">
-                                 extends
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q2d" name="q2" type="radio"/>
-                                <label for="q2d">
-                                 implement
-                                </label>
-                               </li>
-                              </ul>
-                             </li>
-                             <li class="mb-4">
-                              <p class="font-bold">
-                               What is the output of the following code?
-                              </p>
-                              <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto mb-2">
-                       <code>
-                       public class Test {
-                           public static void main(String[] args) {
-                               int x = 5;
-                               int y = 10;
-                               System.out.println(x + y);
-                           }
-                       }
-                       </code>
-                                       </pre>
-                              <ul class="list-disc list-inside ml-6">
-                               <li>
-                                <input id="q3a" name="q3" type="radio"/>
-                                <label for="q3a">
-                                 15
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q3b" name="q3" type="radio"/>
-                                <label for="q3b">
-                                 510
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q3c" name="q3" type="radio"/>
-                                <label for="q3c">
-                                 5 10
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q3d" name="q3" type="radio"/>
-                                <label for="q3d">
-                                 Error
-                                </label>
-                               </li>
-                              </ul>
-                             </li>
-                             <li class="mb-4">
-                              <p class="font-bold">
-                               Which of the following is used to create an object in Java?
-                              </p>
-                              <ul class="list-disc list-inside ml-6">
-                               <li>
-                                <input id="q4a" name="q4" type="radio"/>
-                                <label for="q4a">
-                                 class
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q4b" name="q4" type="radio"/>
-                                <label for="q4b">
-                                 interface
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q4c" name="q4" type="radio"/>
-                                <label for="q4c">
-                                 new
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q4d" name="q4" type="radio"/>
-                                <label for="q4d">
-                                 main
-                                </label>
-                               </li>
-                              </ul>
-                             </li>
-                             <li class="mb-4">
-                              <p class="font-bold">
-                               What is the size of an int variable in Java?
-                              </p>
-                              <ul class="list-disc list-inside ml-6">
-                               <li>
-                                <input id="q5a" name="q5" type="radio"/>
-                                <label for="q5a">
-                                 8 bits
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q5b" name="q5" type="radio"/>
-                                <label for="q5b">
-                                 16 bits
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q5c" name="q5" type="radio"/>
-                                <label for="q5c">
-                                 32 bits
-                                </label>
-                               </li>
-                               <li>
-                                <input id="q5d" name="q5" type="radio"/>
-                                <label for="q5d">
-                                 64 bits
-                                </label>
-                               </li>
-                              </ul>
-                             </li>
-                            </ul>
-                           </div>
-                          </section>
-                          <br>
+            <section id="quiz" class="content-section">
+                <h2>Quiz: Test Your <span class="gradient-text">Knowledge</span></h2>
+                <p style="margin-bottom:16px;">Answer these sample questions to test your Java understanding.</p>
+                <div class="glass" style="padding:24px; border-radius:var(--radius-md);">
+                    <p style="font-weight:600; margin-bottom:12px;">1. What is the correct syntax for the main method in
+                        Java?</p>
+                    <div style="padding-left:16px; margin-bottom:16px;">
+                        <label style="display:block; padding:6px 0; color:var(--text-secondary);"><input type="radio"
+                                name="q1" style="accent-color:var(--accent-1); margin-right:8px;">public static void
+                            main(String[] args)</label>
+                        <label style="display:block; padding:6px 0; color:var(--text-secondary);"><input type="radio"
+                                name="q1" style="accent-color:var(--accent-1); margin-right:8px;">public void
+                            main(String[] args)</label>
+                        <label style="display:block; padding:6px 0; color:var(--text-secondary);"><input type="radio"
+                                name="q1" style="accent-color:var(--accent-1); margin-right:8px;">static void
+                            main(String[] args)</label>
+                    </div>
+                    <p style="font-weight:600; margin-bottom:12px;">2. Which keyword is used to create an object in
+                        Java?</p>
+                    <div style="padding-left:16px;">
+                        <label style="display:block; padding:6px 0; color:var(--text-secondary);"><input type="radio"
+                                name="q2" style="accent-color:var(--accent-1); margin-right:8px;">class</label>
+                        <label style="display:block; padding:6px 0; color:var(--text-secondary);"><input type="radio"
+                                name="q2" style="accent-color:var(--accent-1); margin-right:8px;">new</label>
+                        <label style="display:block; padding:6px 0; color:var(--text-secondary);"><input type="radio"
+                                name="q2" style="accent-color:var(--accent-1); margin-right:8px;">main</label>
+                    </div>
+                </div>
+            </section>
 
-                          <section id="reference">
-                            <h2 class="text-4xl font-bold mb-4 text-gray-100">References</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105">
-                                 <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                                  Java Basics
-                                 </h4>
-                                 <p class="text-gray-300">
-                                  A comprehensive guide to understanding the basics of Java programming.
-                                 </p>
-                                 <a class="text-blue-400 hover:underline mt-4 block" href="knowzilla(java).pptx">
-                                  Download PPT
-                                 </a>
-                                </div>
-                                <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105">
-                                 <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                                  Advanced Java
-                                 </h4>
-                                 <p class="text-gray-300">
-                                  Dive deeper into advanced Java concepts and techniques.
-                                 </p>
-                                 <a class="text-blue-400 hover:underline mt-4 block" href="#">
-                                  Download PPT
-                                 </a>
-                                </div>
-                                <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105">
-                                 <h4 class="text-2xl font-bold mb-2 text-gray-100">
-                                  Java Frameworks
-                                 </h4>
-                                 <p class="text-gray-300">
-                                  Learn about popular Java frameworks and how to use them.
-                                 </p>
-                                 <a class="text-blue-400 hover:underline mt-4 block" href="#">
-                                  Download PPT
-                                 </a>
-                                </div>
-                               </div>
-                              </section>  
-                              
-                              <br>
+            <section id="reference" class="content-section">
+                <h2><span class="gradient-text">References</span></h2>
+                <div class="ref-grid">
+                    <div class="ref-card">
+                        <h4>📘 Java Basics</h4>
+                        <p>Comprehensive guide to Java fundamentals.</p><a href="knowzilla(java).pptx">Download PPT</a>
+                    </div>
+                    <div class="ref-card">
+                        <h4>📗 Advanced Java</h4>
+                        <p>Dive into advanced concepts and techniques.</p><a href="#">Download PPT</a>
+                    </div>
+                    <div class="ref-card">
+                        <h4>📙 Java Frameworks</h4>
+                        <p>Learn popular Java frameworks.</p><a href="#">Download PPT</a>
+                    </div>
+                </div>
+            </section>
 
-                              <section id="test">
-                                <h2 class="text-4xl font-bold mb-4 text-gray-100">Tests</h2>  
-                                <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105 text-center">
-                                    <a class="text-2xl font-bold text-gray-100 hover:underline" href="javaquiz.html">
-                                    TEST 1
-                                    </a>
-                                   </div>
-                               <br>
-                                   <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105 text-center">
-                                       <a class="text-2xl font-bold text-gray-100 hover:underline" href="javaquiz1.html">
-                                        TEST 2
-                                       </a>
-                                      </div>
-                                  </section>
-                                  <br>             
+            <section id="test" class="content-section">
+                <h2><span class="gradient-text">Tests</span></h2>
+                <a href="javaquiz.html" class="test-card">
+                    <h4>📝 Test 1 — Java Fundamentals</h4><span>Start →</span>
+                </a>
+                <a href="javaquiz1.html" class="test-card">
+                    <h4>📝 Test 2 — Advanced Java</h4><span>Start →</span>
+                </a>
+            </section>
 
-
+            <footer
+                style="padding:32px 0; border-top:1px solid var(--border-glass); margin-top:40px; text-align:center;">
+                <p style="color:var(--text-muted); font-size:.85rem;">© 2025 Knowzilla. All rights reserved.</p>
+            </footer>
         </main>
-        <footer class="bg-gray-900 text-white p-4 mt-8 shadow-lg">
-            <div class="container mx-auto text-center py-8">
-                <p>© 2025 Knowzilla. All rights reserved.</p>
-            </div>
-        </footer>
     </div>
-</body>
+
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+
+    <script>
+        window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40));
+        document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('open'));
+        document.getElementById('sidebarToggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+
+        // Active sidebar link on scroll
+        const sections = document.querySelectorAll('.content-section');
+        const sidebarLinks = document.querySelectorAll('.topic-sidebar a');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+            sidebarLinks.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+            });
+        });
+
+        // Close sidebar on link click (mobile)
+        sidebarLinks.forEach(a => a.addEventListener('click', () => {
+            if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }));
+    </script>
+<script src="js/session-ui.js"></script></body>
+
 </html>
+
+

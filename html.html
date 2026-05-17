@@ -1,452 +1,125 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Introduction - Knowzilla</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>HTML — Knowzilla</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="logo.png">
     <style>
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: #1a202c;
-            padding-top: 20px;
-            overflow-y: auto;
+        :root {
+            --accent-1: #e64a19;
+            --accent-2: #ff7043;
+            --accent-gradient: linear-gradient(135deg, #e64a19, #ff7043);
+            --accent-glow: rgba(230, 74, 25, 0.35);
         }
-        .sidebar a {
-            display: block;
-            color: white;
-            padding: 15px;
-            text-decoration: none;
-        }
-        .sidebar a:hover {
-            background: #2d3748;
-        }
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-        }
-        .glow-on-hover:hover {
-            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
-        }
+
+        .topic-layout{display:flex;min-height:100vh;padding-top:80px}.topic-sidebar{width:260px;position:fixed;top:80px;left:0;bottom:0;background:var(--bg-secondary);border-right:1px solid var(--border-glass);padding:24px 0;overflow-y:auto;z-index:100}.topic-sidebar h3{font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);padding:0 24px;margin-bottom:16px}.topic-sidebar a{display:flex;align-items:center;gap:10px;padding:10px 24px;color:var(--text-secondary);font-size:.9rem;transition:var(--transition);border-left:3px solid transparent}.topic-sidebar a:hover,.topic-sidebar a.active{color:var(--text-primary);background:rgba(108,92,231,.08);border-left-color:var(--accent-1)}.topic-content{margin-left:260px;padding:32px 48px;max-width:900px;width:100%}.topic-header{display:flex;align-items:center;gap:20px;margin-bottom:40px;padding:32px;border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(255,112,67,.1),rgba(230,74,25,.05));border:1px solid rgba(255,112,67,.15)}.topic-header .icon{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#ff7043,#e64a19);display:flex;align-items:center;justify-content:center;font-size:2rem;color:#fff;flex-shrink:0}.topic-header h1{font-size:2rem}.topic-header p{color:var(--text-secondary);font-size:.92rem;margin-top:4px}.content-section{margin-bottom:48px;scroll-margin-top:100px}.content-section h2{font-size:1.6rem;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border-glass)}.content-section p,.content-section li{color:var(--text-secondary);font-size:.95rem;line-height:1.8}.content-section ul{list-style:none;margin:16px 0}.content-section ul li{padding:8px 0 8px 24px;position:relative}.content-section ul li::before{content:'▸';position:absolute;left:0;color:var(--accent-1);font-weight:bold}.code-block{background:var(--bg-secondary);border:1px solid var(--border-glass);border-radius:var(--radius-md);padding:20px;margin:16px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.88rem;color:#e0e0e0;line-height:1.7}.code-block code{white-space:pre}.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.feature-card{padding:24px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border-glass);transition:var(--transition)}.feature-card:hover{border-color:rgba(108,92,231,.3);transform:translateY(-2px)}.feature-card h4{margin-bottom:8px;font-size:1rem}.feature-card p{font-size:.85rem}.ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:16px 0}.ref-card{padding:24px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border-glass);transition:var(--transition);text-align:center}.ref-card:hover{border-color:rgba(108,92,231,.3);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,.3)}.ref-card h4{margin-bottom:6px}.ref-card p{font-size:.82rem;color:var(--text-secondary);margin-bottom:12px}.ref-card a{color:var(--accent-2);font-weight:600;font-size:.88rem}.test-card{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-radius:var(--radius-md);background:var(--bg-glass);border:1px solid var(--border-glass);margin-bottom:12px;transition:var(--transition);text-decoration:none}.test-card:hover{border-color:rgba(108,92,231,.3);transform:translateX(6px);background:rgba(108,92,231,.08)}.test-card h4{color:var(--text-primary)}.test-card span{color:var(--accent-2);font-weight:600}.content-img{width:100%;max-width:600px;border-radius:var(--radius-md);margin:16px 0;display:block}.sidebar-toggle{display:none;position:fixed;bottom:24px;right:24px;z-index:200;width:48px;height:48px;border-radius:50%;border:none;background:var(--accent-gradient);color:#fff;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 20px var(--accent-glow)}@media(max-width:768px){.topic-sidebar{transform:translateX(-100%);transition:var(--transition);z-index:999}.topic-sidebar.open{transform:translateX(0)}.topic-content{margin-left:0;padding:24px 16px}.sidebar-toggle{display:flex;align-items:center;justify-content:center}.feature-grid,.ref-grid{grid-template-columns:1fr}}
     </style>
 </head>
-<body class="font-roboto bg-black text-gray-200">
-    <div class="sidebar">
-        <h2 class="text-white text-center text-2xl mb-4">Navigation</h2>
-        <a href="#introduction">Introduction</a>
-        <a href="#why-learn-html">Why Learn HTML?</a>
-        <a href="#html-basics">HTML Basics</a>
-        <a href="#html-features">HTML Features</a>
-        <a href="#quiz">HTML Quiz</a>
-        <a href="#reference">Reference PPTs</a>
-        <a href="#test">Tests</a>
-    </div>
-    <div class="content">
-        <header class="bg-gray-900 text-white p-4 shadow-lg">
-            <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-3xl font-bold">KNOWZILLA <a href="index.html"></a>
-                <a href="index.html"><img src="logo.png" width="30" height="20" alt="Logo"></a>
-                </h1>
-                <nav>
-                    <ul class="flex space-x-6">
-                        <li><a class="hover:underline" href="index.html">Home</a></li>
-                        <li><a class="hover:underline" href="references.html">References</a></li>
-                        <li><a class="hover:underline" href="about.html">About</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-        <main class="container mx-auto mt-8 p-6 bg-gray-900 shadow-lg rounded-lg">
-            <section id="introduction">
-                <h2 class="text-4xl font-bold mb-4 text-gray-100">Introduction to HTML</h2>
-                <p class="text-lg mb-6 text-gray-300">
-                    HTML (HyperText Markup Language) is the standard markup language for creating web pages and web applications. With Cascading Style Sheets (CSS) and JavaScript, it forms a triad of cornerstone technologies for the World Wide Web.
-                   </p>
-                   <p class="text-lg mb-6 text-gray-300">
-                    HTML was created by Tim Berners-Lee in late 1991 but "HTML 2.0" was the first standard HTML specification which was published in 1995. HTML is a simple and flexible language that is easy to learn and use.
-                   </p>
-                   <img alt="Illustration of HTML elements and structure with HTML logo" class="mx-auto mb-6 rounded-lg shadow-md" height="400" src="https://storage.googleapis.com/a1aa/image/bmDoXNsOYR7yVzdipyGIOexdfw41J-Z5xT4RZFBcF7A.jpg" width="600"/>
-            </section>
-            <br>
-
-
-            <section id="why-learn-html">
-                <h3 class="text-3xl font-bold mb-4 text-gray-100">Why Learn HTML?</h3>
-                <ul class="list-disc list-inside mb-6 text-gray-300">
-                    <li>
-                        HTML is the foundation of all web pages. Without HTML, you wouldn't be able to create web pages.
-                       </li>
-                       <li>
-                        It is easy to learn and use.
-                       </li>
-                       <li>
-                        HTML is supported by all browsers.
-                       </li>
-                       <li>
-                        It is free and open-source.
-                       </li>
-                       <li>
-                        HTML is used to structure content on the web.
-                       </li>
-                       <li>
-                        It is the first step in learning web development.
-                       </li>
-                       <li>
-                        HTML is essential for creating accessible web content.
-                       </li>
-                </ul>
-            </section>
-            <br>
-
-
-            <section id="html-basics">
-                <h3 class="text-3xl font-bold mb-4 text-gray-100">HTML Basics</h3>
-
-<div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-     <h4 class="text-2xl font-bold mb-2 text-gray-100">
-      Basic HTML Structure
-     </h4>
-     <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto">
-<code>
-&lt;!DOCTYPE html&gt;
+<body>
+<nav class="kz-navbar" id="navbar">
+    <a href="index.html" class="brand"><img src="logo.png" alt="Logo"> KNOWZILLA</a>
+    <ul class="kz-nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li id="dashboard-li" style="display:none;"><a href="profile.html">Dashboard</a></li>
+        <li id="user-welcome-li" style="display:none;"><span class="user-badge"><i class="fa-solid fa-user-circle"></i> <span id="username-display"></span></span></li><li id="logout-li" style="display:none;"><a href="#" onclick="logoutUser()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li><li id="login-li"><a href="login.html" class="nav-btn">Login</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="topic-layout">
+    <aside class="topic-sidebar" id="sidebar">
+        <h3>Navigation</h3>
+        <a href="#introduction" class="active"><i class="fa-solid fa-book"></i> Introduction</a>
+        <a href="#why-learn"><i class="fa-solid fa-lightbulb"></i> Why Learn HTML?</a>
+        <a href="#basics"><i class="fa-solid fa-code"></i> HTML Basics</a>
+        <a href="#features"><i class="fa-solid fa-star"></i> HTML Features</a>
+        <a href="#reference"><i class="fa-solid fa-file-powerpoint"></i> References</a>
+        <a href="#test"><i class="fa-solid fa-clipboard-check"></i> Tests</a>
+    </aside>
+    <main class="topic-content">
+        <div class="topic-header">
+            <div class="icon"><i class="fa-brands fa-html5"></i></div>
+            <div><h1>HTML</h1><p>The standard markup language for creating web pages</p></div>
+        </div>
+        <section id="introduction" class="content-section">
+            <h2><span class="gradient-text">Introduction</span> to HTML</h2>
+            <p>HTML (HyperText Markup Language) is the standard markup language for creating web pages and web applications. With Cascading Style Sheets (CSS) and JavaScript, it forms a triad of cornerstone technologies for the World Wide Web.</p><br>
+            <p>HTML was created by Tim Berners-Lee in late 1991 but "HTML 2.0" was the first standard HTML specification which was published in 1995. HTML is a simple and flexible language that is easy to learn and use.</p>
+            <img alt="HTML elements illustration" class="content-img" src="https://storage.googleapis.com/a1aa/image/bmDoXNsOYR7yVzdipyGIOexdfw41J-Z5xT4RZFBcF7A.jpg">
+        </section>
+        <section id="why-learn" class="content-section">
+            <h2>Why Learn <span class="gradient-text">HTML</span>?</h2>
+            <ul>
+                <li>HTML is the foundation of all web pages.</li>
+                <li>It is easy to learn and use.</li>
+                <li>HTML is supported by all browsers.</li>
+                <li>It is free and open-source.</li>
+                <li>HTML is used to structure content on the web.</li>
+                <li>It is the first step in learning web development.</li>
+                <li>HTML is essential for creating accessible web content.</li>
+            </ul>
+        </section>
+        <section id="basics" class="content-section">
+            <h2>HTML <span class="gradient-text">Basics</span></h2>
+            <h4 style="margin-bottom:8px;">Basic HTML Structure</h4>
+            <div class="code-block"><code>&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
 &lt;head&gt;
-    &lt;meta charset="utf-8"/&gt;
-    &lt;meta content="width=device-width, initial-scale=1.0" name="viewport"/&gt;
+    &lt;meta charset="utf-8"&gt;
     &lt;title&gt;Document&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
     &lt;h1&gt;Hello, World!&lt;/h1&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</code>
-     </pre>
-    </div>
-    <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-     <h4 class="text-2xl font-bold mb-2 text-gray-100">
-      Simple Paragraph Example
-     </h4>
-     <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto">
-<code>
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-    &lt;meta charset="utf-8"/&gt;
-    &lt;meta content="width=device-width, initial-scale=1.0" name="viewport"/&gt;
-    &lt;title&gt;Document&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;p&gt;This is a simple paragraph.&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code>
-     </pre>
-    </div>
-    <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-     <h4 class="text-2xl font-bold mb-2 text-gray-100">
-      Simple List Example
-     </h4>
-     <pre class="bg-gray-900 text-white p-4 rounded-lg overflow-auto">
-<code>
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-    &lt;meta charset="utf-8"/&gt;
-    &lt;meta content="width=device-width, initial-scale=1.0" name="viewport"/&gt;
-    &lt;title&gt;Document&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;ul&gt;
-        &lt;li&gt;Item 1&lt;/li&gt;
-        &lt;li&gt;Item 2&lt;/li&gt;
-        &lt;li&gt;Item 3&lt;/li&gt;
-    &lt;/ul&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code>
-     </pre>
-    </div>
-   </section>
-   <br>
-
-
-   <section id="html-features">
-    <h3 class="text-3xl font-bold mb-4 text-gray-100"> HTML Features</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-          Semantic Elements
-         </h4>
-         <p class="text-gray-300">
-          HTML5 introduced semantic elements that clearly describe their meaning in a human- and machine-readable way.
-         </p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-          Multimedia Support
-         </h4>
-         <p class="text-gray-300">
-          HTML supports multimedia elements like audio and video, making it easier to embed media content.
-         </p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-          Forms and Input
-         </h4>
-         <p class="text-gray-300">
-          HTML provides a wide range of form elements and input types to create interactive forms.
-         </p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-lg shadow-inner">
-         <h4 class="text-2xl font-bold mb-2 text-gray-100">
-          Accessibility
-         </h4>
-         <p class="text-gray-300">
-          HTML includes features that help create accessible web content for users with disabilities.
-         </p>
-        </div>
-       </div>
-      </section>
-      <br>
-
-      
-   <section id="quiz">
-    <h3 class="text-3xl font-bold mb-4 text-gray-100"> Quiz: Test Your HTML Knowledge</h3>
-    <div class="bg-gray-800 p-6 rounded-lg mb-6 shadow-inner">
-        <h4 class="text-2xl font-bold mb-2 text-gray-100">
-         Sample Questions
-        </h4>
-        <ul class="list-decimal list-inside text-gray-300">
-         <li class="mb-4">
-          <p class="font-bold">
-           What does HTML stand for?
-          </p>
-          <ul class="list-disc list-inside ml-6">
-           <li>
-            <input id="q1a" name="q1" type="radio"/>
-            <label for="q1a">
-             HyperText Markup Language
-            </label>
-           </li>
-           <li>
-            <input id="q1b" name="q1" type="radio"/>
-            <label for="q1b">
-             Hyperlinks and Text Markup Language
-            </label>
-           </li>
-           <li>
-            <input id="q1c" name="q1" type="radio"/>
-            <label for="q1c">
-             Home Tool Markup Language
-            </label>
-           </li>
-           <li>
-            <input id="q1d" name="q1" type="radio"/>
-            <label for="q1d">
-             Hyperlinking Text Markup Language
-            </label>
-           </li>
-          </ul>
-         </li>
-         <li class="mb-4">
-          <p class="font-bold">
-           Which HTML element is used to define the title of a document?
-          </p>
-          <ul class="list-disc list-inside ml-6">
-           <li>
-            <input id="q2a" name="q2" type="radio"/>
-            <label for="q2a">
-             &lt;title&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q2b" name="q2" type="radio"/>
-            <label for="q2b">
-             &lt;head&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q2c" name="q2" type="radio"/>
-            <label for="q2c">
-             &lt;meta&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q2d" name="q2" type="radio"/>
-            <label for="q2d">
-             &lt;body&gt;
-            </label>
-           </li>
-          </ul>
-         </li>
-         <li class="mb-4">
-          <p class="font-bold">
-           What is the correct HTML element for inserting a line break?
-          </p>
-          <ul class="list-disc list-inside ml-6">
-           <li>
-            <input id="q3a" name="q3" type="radio"/>
-            <label for="q3a">
-             &lt;br&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q3b" name="q3" type="radio"/>
-            <label for="q3b">
-             &lt;lb&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q3c" name="q3" type="radio"/>
-            <label for="q3c">
-             &lt;break&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q3d" name="q3" type="radio"/>
-            <label for="q3d">
-             &lt;line&gt;
-            </label>
-           </li>
-          </ul>
-         </li>
-         <li class="mb-4">
-          <p class="font-bold">
-           Which HTML element is used to define important text?
-          </p>
-          <ul class="list-disc list-inside ml-6">
-           <li>
-            <input id="q4a" name="q4" type="radio"/>
-            <label for="q4a">
-             &lt;strong&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q4b" name="q4" type="radio"/>
-            <label for="q4b">
-             &lt;important&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q4c" name="q4" type="radio"/>
-            <label for="q4c">
-             &lt;em&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q4d" name="q4" type="radio"/>
-            <label for="q4d">
-             &lt;imp&gt;
-            </label>
-           </li>
-          </ul>
-         </li>
-         <li class="mb-4">
-          <p class="font-bold">
-           Which HTML element is used to define emphasized text?
-          </p>
-          <ul class="list-disc list-inside ml-6">
-           <li>
-            <input id="q5a" name="q5" type="radio"/>
-            <label for="q5a">
-             &lt;em&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q5b" name="q5" type="radio"/>
-            <label for="q5b">
-             &lt;i&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q5c" name="q5" type="radio"/>
-            <label for="q5c">
-             &lt;italic&gt;
-            </label>
-           </li>
-           <li>
-            <input id="q5d" name="q5" type="radio"/>
-            <label for="q5d">
-             &lt;emphasis&gt;
-            </label>
-           </li>
-          </ul>
-         </li>
-        </ul>
-       </div>
-      </section>
-
-      <br>
-
-      <section id="reference">
-        <h3 class="text-3xl font-bold mb-4 text-gray-100"> References</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105">
-             <h4 class="text-2xl font-bold mb-2 text-gray-100">
-              HTML Basics
-             </h4>
-             <p class="text-gray-300">
-              A comprehensive guide to understanding the basics of HTML.
-             </p>
-             <a class="text-blue-400 hover:underline mt-4 block" href="knowzilla(html).pptx">
-              Download PPT
-             </a>
+&lt;/html&gt;</code></div>
+            <h4 style="margin:20px 0 8px;">Paragraph Example</h4>
+            <div class="code-block"><code>&lt;p&gt;This is a simple paragraph.&lt;/p&gt;</code></div>
+            <h4 style="margin:20px 0 8px;">List Example</h4>
+            <div class="code-block"><code>&lt;ul&gt;
+    &lt;li&gt;Item 1&lt;/li&gt;
+    &lt;li&gt;Item 2&lt;/li&gt;
+    &lt;li&gt;Item 3&lt;/li&gt;
+&lt;/ul&gt;</code></div>
+        </section>
+        <section id="features" class="content-section">
+            <h2>HTML <span class="gradient-text">Features</span></h2>
+            <div class="feature-grid">
+                <div class="feature-card"><h4>📄 Semantic Elements</h4><p>HTML5 introduced semantic elements that clearly describe their meaning in a human- and machine-readable way.</p></div>
+                <div class="feature-card"><h4>🎬 Multimedia Support</h4><p>HTML supports multimedia elements like audio and video, making it easier to embed media content.</p></div>
+                <div class="feature-card"><h4>📝 Forms and Input</h4><p>HTML provides a wide range of form elements and input types to create interactive forms.</p></div>
+                <div class="feature-card"><h4>♿ Accessibility</h4><p>HTML includes features that help create accessible web content for users with disabilities.</p></div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105">
-             <h4 class="text-2xl font-bold mb-2 text-gray-100">
-              Advanced HTML
-             </h4>
-             <p class="text-gray-300">
-              Dive deeper into advanced HTML concepts and techniques.
-             </p>
-             <a class="text-blue-400 hover:underline mt-4 block" href="#">
-              Download PPT
-             </a>
+        </section>
+        <section id="reference" class="content-section">
+            <h2><span class="gradient-text">References</span></h2>
+            <div class="ref-grid">
+                <div class="ref-card"><h4>📘 HTML Basics</h4><p>Guide to HTML fundamentals.</p><a href="#">Download PPT</a></div>
+                <div class="ref-card"><h4>📗 Advanced HTML</h4><p>Advanced concepts and techniques.</p><a href="#">Download PPT</a></div>
+                <div class="ref-card"><h4>📙 HTML5 Features</h4><p>New features in HTML5.</p><a href="#">Download PPT</a></div>
             </div>
-            <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105">
-             <h4 class="text-2xl font-bold mb-2 text-gray-100">
-              HTML5 Features
-             </h4>
-             <p class="text-gray-300">
-              Learn about new features introduced in HTML5.
-             </p>
-             <a class="text-blue-400 hover:underline mt-4 block" href="#">
-              Download PPT
-             </a>
-            </div>
-           </div>
-          </section>
-
-          <br>
-
-          <section id="test">
-            <h3 class="text-3xl font-bold mb-4 text-gray-100"> Tests</h3>
-            <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105 text-center">
-                <a class="text-2xl font-bold text-gray-100 hover:underline" href="htmlquiz.html">
-                 TEST 1 
-                </a>
-               </div>
-           <br>
-               <div class="bg-gray-800 p-6 rounded-lg shadow-inner glow-on-hover transition duration-300 ease-in-out transform hover:scale-105 text-center">
-                   <a class="text-2xl font-bold text-gray-100 hover:underline" href="htmlquiz1.html">
-                    TEST 2
-                   </a>
-                  </div>
-              </section>
-
-
-        </main>
-        <footer class="bg-gray-900 text-white p-4 mt-8 shadow-lg">
-            <div class="container mx-auto text-center py-8">
-                <p>© 2025 Knowzilla. All rights reserved.</p>
-            </div>
+        </section>
+        <section id="test" class="content-section">
+            <h2><span class="gradient-text">Tests</span></h2>
+            <a href="htmlquiz.html" class="test-card"><h4>📝 Test 1 — HTML Fundamentals</h4><span>Start →</span></a>
+            <a href="htmlquiz1.html" class="test-card"><h4>📝 Test 2 — Advanced HTML</h4><span>Start →</span></a>
+        </section>
+        <footer style="padding:32px 0;border-top:1px solid var(--border-glass);margin-top:40px;text-align:center;">
+            <p style="color:var(--text-muted);font-size:.85rem;">© 2025 Knowzilla. All rights reserved.</p>
         </footer>
-    </div>
-</body>
+    </main>
+</div>
+<button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+<script>
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40));
+document.getElementById('hamburger').addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
+document.getElementById('sidebarToggle')?.addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
+const sections=document.querySelectorAll('.content-section');const sidebarLinks=document.querySelectorAll('.topic-sidebar a');
+window.addEventListener('scroll',()=>{let c='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)c=s.id;});sidebarLinks.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')==='#'+c)a.classList.add('active');});});
+sidebarLinks.forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<768)document.getElementById('sidebar').classList.remove('open');}));
+</script>
+<script src="js/session-ui.js"></script></body>
 </html>
+
+
+

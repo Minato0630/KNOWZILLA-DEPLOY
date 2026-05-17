@@ -1,438 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Login/Signup Form</title>
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login — Knowzilla</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="logo.png">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
-            text-decoration: none;
-            list-style: none;
-        }
-
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(90deg, #333, #555);
+            display:flex; align-items:center; justify-content:center;
+            min-height:100vh; padding:20px;
+            background: #0a0a0f url('logo.png') no-repeat center center;
+            background-size: 320px; background-blend-mode: soft-light;
         }
-
-        .container {
-            position: relative;
-            width: 850px;
-            height: 650px;
-            background: #1a1a1a;
-            margin: 20px;
-            border-radius: 30px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, .2);
-            overflow: hidden;
+        body::before {
+            content:''; position:fixed; inset:0; z-index:0;
+            background:
+                radial-gradient(ellipse 600px 600px at 20% 30%, rgba(108,92,231,0.12), transparent),
+                radial-gradient(ellipse 500px 500px at 80% 70%, rgba(0,206,201,0.08), transparent);
+            pointer-events:none;
         }
-
-        .container h1 {
-            font-size: 36px;
-            margin: -10px 0;
-            color: #fff;
+        .auth-container {
+            position:relative; width:100%; max-width:920px; z-index:1;
+            min-height:580px; border-radius:var(--radius-xl);
+            overflow:hidden; display:flex;
+            background:rgba(18,18,26,0.92); border:1px solid var(--border-glass);
+            box-shadow:0 24px 80px rgba(0,0,0,.6);
+            backdrop-filter:blur(20px);
         }
-
-        .container p {
-            font-size: 14.5px;
-            margin: 15px 0;
-            color: #aaa;
+        .auth-form-panel {
+            width:50%; padding:48px 40px; display:flex; flex-direction:column;
+            justify-content:center; transition:all .6s cubic-bezier(.4,0,.2,1);
+            z-index:2; position:relative;
         }
-
-        form {
-            width: 100%;
+        .auth-form-panel h1 { font-size:2rem; margin-bottom:8px; }
+        .auth-form-panel .subtitle { color:var(--text-secondary); margin-bottom:28px; font-size:.92rem; }
+        .auth-input-group { position:relative; margin-bottom:16px; }
+        .auth-input-group input {
+            width:100%; padding:14px 18px 14px 44px; border-radius:var(--radius-sm);
+            border:1px solid var(--border-glass); background:rgba(255,255,255,.04);
+            color:var(--text-primary); font-size:.95rem; font-family:'Inter';
+            outline:none; transition:var(--transition);
         }
-
-        .form-box {
-            position: absolute;
-            right: 0;
-            width: 50%;
-            height: 100%;
-            background: #1a1a1a;
-            display: flex;
-            align-items: center;
-            color: #fff;
-            text-align: center;
-            padding: 40px;
-            z-index: 1;
-            transition: .6s ease-in-out 1.2s, visibility 0s 1s;
+        .auth-input-group input:focus { border-color:var(--accent-1); box-shadow:0 0 0 3px rgba(108,92,231,.15); }
+        .auth-input-group input::placeholder { color:var(--text-muted); }
+        .auth-input-group i {
+            position:absolute; left:16px; top:50%; transform:translateY(-50%);
+            color:var(--text-muted); font-size:.9rem;
         }
-
-        .container.active .form-box {
-            right: 50%;
+        .auth-btn {
+            width:100%; padding:14px; border-radius:var(--radius-sm); border:none;
+            background:var(--accent-gradient); color:#fff; font-weight:700;
+            font-size:1rem; cursor:pointer; transition:var(--transition); margin-top:8px;
         }
-
-        .form-box.register {
-            visibility: hidden;
+        .auth-btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px var(--accent-glow); }
+        .auth-link { text-align:center; margin-top:16px; color:var(--text-secondary); font-size:.88rem; }
+        .auth-link a { color:var(--accent-2); font-weight:600; cursor:pointer; }
+        .auth-welcome-panel {
+            width:50%; display:flex; flex-direction:column; align-items:center;
+            justify-content:center; text-align:center; padding:40px;
+            background:var(--accent-gradient); position:relative; overflow:hidden;
         }
-
-        .container.active .form-box.register {
-            visibility: visible;
+        .auth-welcome-panel::before {
+            content:''; position:absolute; inset:0;
+            background:
+                radial-gradient(circle at 30% 70%, rgba(255,255,255,.1), transparent 60%),
+                url('logo.png') no-repeat center center;
+            background-size: auto, 180px;
+            opacity:0.08;
         }
-
-        .input-box {
-            position: relative;
-            margin: 20px 0;
+        .auth-welcome-panel img { width:80px; margin-bottom:20px; border-radius:16px; position:relative; z-index:1;
+            box-shadow:0 8px 32px rgba(0,0,0,.3); }
+        .auth-welcome-panel h2 { font-size:1.8rem; margin-bottom:12px; position:relative; z-index:1; }
+        .auth-welcome-panel p { color:rgba(255,255,255,.8); margin-bottom:24px; position:relative; z-index:1; }
+        .auth-switch-btn {
+            padding:10px 32px; border-radius:var(--radius-sm); border:2px solid rgba(255,255,255,.5);
+            background:transparent; color:#fff; font-weight:600; cursor:pointer;
+            transition:var(--transition); position:relative; z-index:1;
         }
+        .auth-switch-btn:hover { background:rgba(255,255,255,.15); border-color:#fff; }
 
-        .input-box input {
-            width: 100%;
-            padding: 13px 50px 13px 20px;
-            background: #333;
-            border-radius: 8px;
-            border: none;
-            outline: none;
-            font-size: 16px;
-            color: #fff;
-            font-weight: 500;
-        }
+        .forgot-link { text-align:right; margin:-8px 0 8px; }
+        .forgot-link a { font-size:.82rem; color:var(--text-muted); }
+        .forgot-link a:hover { color:var(--accent-2); }
 
-        .input-box input::placeholder {
-            color: #888;
-            font-weight: 400;
-        }
+        /* Error/success messages */
+        .auth-msg { padding:10px 16px; border-radius:var(--radius-sm); margin-bottom:16px; font-size:.88rem; display:none; }
+        .auth-msg.error { display:block; background:rgba(239,83,80,.12); border:1px solid rgba(239,83,80,.3); color:#ef5350; }
+        .auth-msg.success { display:block; background:rgba(102,187,106,.12); border:1px solid rgba(102,187,106,.3); color:#66bb6a; }
 
-        .input-box i {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: #888;
-        }
-
-        .forgot-link {
-            margin: -15px 0 15px;
-        }
-
-        .forgot-link a {
-            font-size: 14.5px;
-            color: #aaa;
-        }
-
-        .btn {
-            width: 100%;
-            height: 48px;
-            background: #555;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            color: #fff;
-            font-weight: 600;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            background: linear-gradient(45deg, #ff6b6b, #f06595, #cc5de8, #845ef7, #5c7cfa, #339af0, #22b8cf, #20c997, #51cf66, #94d82d, #fcc419, #ff922b);
-            background-size: 400%;
-            z-index: -1;
-            filter: blur(10px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover::before {
-            opacity: 1;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .toggle-box {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .toggle-box::before {
-            content: '';
-            position: absolute;
-            left: -250%;
-            width: 300%;
-            height: 100%;
-            background: #555;
-            border-radius: 150px;
-            z-index: 2;
-            transition: 1.8s ease-in-out;
-        }
-
-        .container.active .toggle-box::before {
-            left: 50%;
-        }
-
-        .toggle-panel {
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-            transition: .6s ease-in-out;
-        }
-
-        .toggle-panel.toggle-left {
-            left: 0;
-            transition-delay: 1.2s;
-        }
-
-        .container.active .toggle-panel.toggle-left {
-            left: -50%;
-            transition-delay: .6s;
-        }
-
-        .toggle-panel.toggle-right {
-            right: -50%;
-            transition-delay: .6s;
-        }
-
-        .container.active .toggle-panel.toggle-right {
-            right: 0;
-            transition-delay: 1.2s;
-        }
-
-        .toggle-panel p {
-            margin-bottom: 20px;
-        }
-
-        .toggle-panel .btn {
-            width: 160px;
-            height: 46px;
-            background: transparent;
-            border: 2px solid #fff;
-            box-shadow: none;
-        }
-
-        .success-message {
-            display: none;
-            color: #4caf50;
-            margin-top: 10px;
-        }
-
-        .show-message {
-            display: block;
-        }
-
-        @media screen and (max-width: 650px) {
-            .container {
-                height: calc(100vh - 40px);
-            }
-
-            .form-box {
-                bottom: 0;
-                width: 100%;
-                height: 70%;
-            }
-
-            .container.active .form-box {
-                right: 0;
-                bottom: 30%;
-            }
-
-            .toggle-box::before {
-                left: 0;
-                top: -270%;
-                width: 100%;
-                height: 300%;
-                border-radius: 20vw;
-            }
-
-            .container.active .toggle-box::before {
-                left: 0;
-                top: 70%;
-            }
-
-            .container.active .toggle-panel.toggle-left {
-                left: 0;
-                top: -30%;
-            }
-
-            .toggle-panel {
-                width: 100%;
-                height: 30%;
-            }
-
-            .toggle-panel.toggle-left {
-                top: 0;
-            }
-
-            .toggle-panel.toggle-right {
-                right: 0;
-                bottom: -30%;
-            }
-
-            .container.active .toggle-panel.toggle-right {
-                bottom: 0;
-            }
-        }
-
-        @media screen and (max-width: 400px) {
-            .form-box {
-                padding: 20px;
-            }
-
-            .toggle-panel h1 {
-                font-size: 30px;
-            }
+        @media(max-width:700px) {
+            .auth-container { flex-direction:column-reverse; min-height:auto; }
+            .auth-form-panel, .auth-welcome-panel { width:100%; }
+            .auth-welcome-panel { padding:32px 24px; min-height:200px; }
+            .auth-form-panel { padding:32px 24px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-box login">
 
-            <form id="loginForm">
-                <h1>Login</h1>
-                <div class="input-box">
-                    <input placeholder="Registration No" name="registration_no" id="login-reg" required type="text"/>
-                    <i class="bx bxs-user"></i>
-                </div>
-                <div class="input-box">
-                    <input placeholder="Password" name="password" id="login-pass" required type="password"/>
-                    <i class="bx bxs-lock-alt"></i>
-                </div>
-                <div class="forgot-link">
-                    <a href="#">Forgot Password?</a>
-                </div>
-                <button class="btn" type="submit" id="login-submit">Login</button>
-            </form>
-        </div>
-        <div class="form-box register">
-            <form id="registerForm" >
-                <h1>Registration</h1>
-                <div class="input-box">
-                    <input placeholder="Name" name="name" id="reg-name" required type="text"/>
-                    <i class="bx bxs-user"></i>
-                </div>
-                <div class="input-box">
-                    <input placeholder="Registration No" name="registration_no" id="reg-reg" required type="text"/>
-                    <i class="bx bxs-id-card"></i>
-                </div>
-                <div class="input-box">
-                    <input placeholder="Email" name="email" id="reg-email" required type="email"/>
-                    <i class="bx bxs-envelope"></i>
-                </div>
-                <div class="input-box">
-                    <input placeholder="Phone No" name="phone_no" id="reg-phone" required type="text"/>
-                    <i class="bx bxs-phone"></i>
-                </div>
-                <div class="input-box">
-                    <input placeholder="Class" name="class" id="reg-class" required type="text"/>
-                    <i class="bx bxs-school"></i>
-                </div>
-                <div class="input-box">
-                    <input placeholder="Password" name="password" id="reg-pass" required type="password"/>
-                    <i class="bx bxs-lock-alt"></i>
-                </div>
-                <button class="btn" type="submit" id="register-submit">Register</button>
-                <p class="success-message" id="successMessage">Successfully registered!</p>
-            </form>
-        </div>
-        <div class="toggle-box">
-            <div class="toggle-panel toggle-left">
-                <a href="https://imgbb.com/"><img src="https://i.ibb.co/SDyQBz4N/logo.png" alt="logo" border="0" width="100px"></a>
-                <h1>Welcome Back!</h1>
-                <p>Don't have an account?</p>
-                <button class="btn register-btn">Register</button>
+<div class="auth-container" id="authContainer">
+    <!-- Login Form -->
+    <div class="auth-form-panel login-panel">
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Login to continue your learning journey</p>
+        <div class="auth-msg" id="loginMsg"></div>
+        <form action="/api/login" method="POST" id="loginForm">
+            <div class="auth-input-group">
+                <i class="fa-solid fa-id-card"></i>
+                <input type="text" placeholder="Registration No" name="registration_no" required>
             </div>
-            <div class="toggle-panel toggle-right">
-                <a href="https://imgbb.com/"><img src="https://i.ibb.co/SDyQBz4N/logo.png" alt="logo" border="0" width="100px"></a>
-                <h1>Hello, Welcome!</h1>
-                <p>Already have an account?</p>
-                <button class="btn login-btn">Login</button>
+            <div class="auth-input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" placeholder="Password" name="password" required>
             </div>
-        </div>
+            <div class="forgot-link"><a href="#">Forgot Password?</a></div>
+            <button class="auth-btn" type="submit">Login <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        <p class="auth-link">Don't have an account? <a onclick="toggleView('register')">Register</a></p>
     </div>
 
-    <script>
-        const container = document.querySelector('.container');
-        const registerBtn = document.querySelector('.register-btn');
-        const loginBtn = document.querySelector('.login-btn');
+    <!-- Register Form -->
+    <div class="auth-form-panel register-panel" style="display:none;">
+        <h1>Create Account</h1>
+        <p class="subtitle">Join Knowzilla and start learning</p>
+        <div class="auth-msg" id="registerMsg"></div>
+        <form action="/api/register" method="POST" id="registerForm">
+            <div class="auth-input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" placeholder="Full Name" name="name" required>
+            </div>
+            <div class="auth-input-group">
+                <i class="fa-solid fa-id-card"></i>
+                <input type="text" placeholder="Registration No" name="registration_no" required>
+            </div>
+            <div class="auth-input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" placeholder="Email" name="email" required>
+            </div>
+            <div class="auth-input-group">
+                <i class="fa-solid fa-phone"></i>
+                <input type="text" placeholder="Phone No" name="phone_no" required>
+            </div>
+            <div class="auth-input-group">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <input type="text" placeholder="Class" name="class" required>
+            </div>
+            <div class="auth-input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <button class="auth-btn" type="submit">Register <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+        <p class="auth-link">Already have an account? <a onclick="toggleView('login')">Login</a></p>
+    </div>
 
-        registerBtn.addEventListener('click', () => {
-            container.classList.add('active');
-        });
+    <!-- Welcome Panel -->
+    <div class="auth-welcome-panel welcome-register">
+        <img src="logo.png" alt="Knowzilla">
+        <h2>Hello, Welcome!</h2>
+        <p>Don't have an account yet?<br>Register now and start your journey.</p>
+        <button class="auth-switch-btn" onclick="toggleView('register')">Register</button>
+    </div>
+    <div class="auth-welcome-panel welcome-login" style="display:none;">
+        <img src="logo.png" alt="Knowzilla">
+        <h2>Welcome Back!</h2>
+        <p>Already have an account?<br>Login to continue learning.</p>
+        <button class="auth-switch-btn" onclick="toggleView('login')">Login</button>
+    </div>
+</div>
 
-        loginBtn.addEventListener('click', () => {
-            container.classList.remove('active');
-        });
-
-// Check for error params on load
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('error') === 'invalid') {
-    alert('Invalid login credentials. Please check your registration number and password.');
-} else if (urlParams.get('error') === 'duplicate') {
-    alert('Registration number or email already exists.');
-} else if (urlParams.get('error') === 'unknown') {
-    alert('An unknown error occurred. Please try again.');
+<script>
+function toggleView(view) {
+    const container = document.getElementById('authContainer');
+    if (view === 'register') {
+        container.querySelector('.login-panel').style.display = 'none';
+        container.querySelector('.register-panel').style.display = 'flex';
+        container.querySelector('.welcome-register').style.display = 'none';
+        container.querySelector('.welcome-login').style.display = 'flex';
+    } else {
+        container.querySelector('.login-panel').style.display = 'flex';
+        container.querySelector('.register-panel').style.display = 'none';
+        container.querySelector('.welcome-register').style.display = 'flex';
+        container.querySelector('.welcome-login').style.display = 'none';
+    }
 }
 
-// API Submit Handlers - with credentials for session cookies
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
-                });
-                if (res.redirected) {
-                    window.location.href = res.url;
-                } else {
-                    alert('Login failed');
-                }
-            } catch (err) {
-                alert('Network error: ' + err.message);
-            }
-        });
+// Show error/success messages from URL params
+const urlParams = new URLSearchParams(window.location.search);
+const error = urlParams.get('error');
+const success = urlParams.get('success');
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            try {
-                const res = await fetch('/api/register', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
-                });
-                if (res.redirected) {
-                    window.location.href = res.url;
-                } else {
-                    alert('Registration failed');
-                }
-            } catch (err) {
-                alert('Network error: ' + err.message);
-            }
-        });
-    </script>
+if (error === 'invalid') {
+    document.getElementById('loginMsg').className = 'auth-msg error';
+    document.getElementById('loginMsg').textContent = '❌ Invalid credentials. Please check your registration number and password.';
+} else if (error === 'duplicate') {
+    toggleView('register');
+    document.getElementById('registerMsg').className = 'auth-msg error';
+    document.getElementById('registerMsg').textContent = '❌ Registration number or email already exists.';
+} else if (error === 'unknown') {
+    document.getElementById('loginMsg').className = 'auth-msg error';
+    document.getElementById('loginMsg').textContent = '❌ An unknown error occurred. Please try again.';
+}
+if (success === 'registered') {
+    document.getElementById('loginMsg').className = 'auth-msg success';
+    document.getElementById('loginMsg').textContent = '✅ Registration successful! Please login.';
+}
 
+const API_BASE = (window.location.port && window.location.port !== '5000') || window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
+
+// AJAX Login Submission
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const msgEl = document.getElementById('loginMsg');
+    msgEl.style.display = 'none';
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        const res = await fetch(API_BASE + '/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        });
+        
+        const result = await res.json();
+        if (res.ok && result.success) {
+            msgEl.className = 'auth-msg success';
+            msgEl.textContent = '✅ Login successful! Redirecting...';
+            msgEl.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        } else {
+            msgEl.className = 'auth-msg error';
+            msgEl.textContent = '❌ ' + (result.error || 'Invalid credentials.');
+            msgEl.style.display = 'block';
+        }
+    } catch (err) {
+        msgEl.className = 'auth-msg error';
+        msgEl.textContent = '❌ Connection failed. Ensure the server is running.';
+        msgEl.style.display = 'block';
+    }
+});
+
+// AJAX Register Submission
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const msgEl = document.getElementById('registerMsg');
+    msgEl.style.display = 'none';
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+        const res = await fetch(API_BASE + '/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        });
+        
+        const result = await res.json();
+        if (res.ok && result.success) {
+            msgEl.className = 'auth-msg success';
+            msgEl.textContent = '✅ Registration successful! Logging in...';
+            msgEl.style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        } else {
+            msgEl.className = 'auth-msg error';
+            msgEl.textContent = '❌ ' + (result.error || 'Registration failed.');
+            msgEl.style.display = 'block';
+        }
+    } catch (err) {
+        msgEl.className = 'auth-msg error';
+        msgEl.textContent = '❌ Connection failed. Ensure the server is running.';
+        msgEl.style.display = 'block';
+    }
+});
+</script>
 </body>
 </html>

@@ -1,144 +1,157 @@
-/* General Styles */
+/* ============================================================
+   KNOWZILLA QUIZ STYLES - Premium Dark Theme
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-glass: rgba(255,255,255,0.06);
+  --border-glass: rgba(255,255,255,0.08);
+  --accent-1: #6c5ce7;
+  --accent-2: #00cec9;
+  --accent-gradient: linear-gradient(135deg, #6c5ce7, #00cec9);
+  --accent-glow: rgba(108,92,231,0.35);
+  --text-primary: #f0f0f5;
+  --text-secondary: rgba(240,240,245,0.6);
+  --text-muted: rgba(240,240,245,0.35);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --transition: .3s cubic-bezier(.4,0,.2,1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a, #333333); /* Black and grey gradient */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    color: #ffffff; /* White text for contrast */
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 500px 500px at 20% 20%, rgba(108,92,231,0.1), transparent),
+    radial-gradient(ellipse 400px 400px at 80% 80%, rgba(0,206,201,0.08), transparent);
 }
 
 header {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center; margin-bottom: 32px; position: relative; z-index: 1;
 }
 
 header h1 {
-    font-size: 3rem;
-    color: #ff6f61; /* Vibrant color for the title */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    margin: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem; font-weight: 800;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 
 header p {
-    font-size: 1.2rem;
-    color: #cccccc; /* Light grey for the tagline */
-    margin: 5px 0 0;
+  color: var(--text-secondary); font-size: 1rem; margin-top: 4px;
 }
 
 .quiz-container {
-    background: #2c2c2c; /* Dark grey background for the quiz container */
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    width: 90%;
-    max-width: 600px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 36px; width: 95%; max-width: 700px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  position: relative; z-index: 1;
 }
 
-#quiz {
-    margin-bottom: 20px;
-}
+#quiz { margin-bottom: 24px; }
 
 .question {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #ffffff; /* White text for questions */
+  font-size: 1.05rem; font-weight: 600;
+  margin-bottom: 14px; color: var(--text-primary);
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  background: rgba(108,92,231,0.08); border-left: 3px solid var(--accent-1);
 }
 
-.options {
-    display: flex;
-    flex-direction: column;
-}
+.options { display: flex; flex-direction: column; margin-bottom: 20px; }
 
 .option {
-    margin: 5px 0;
-    padding: 10px;
-    border: 1px solid #444444; /* Darker grey border */
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    color: #ffffff; /* White text for options */
-    background-color: #3a3a3a; /* Medium grey background for options */
+  margin: 4px 0; padding: 12px 16px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  cursor: pointer; transition: var(--transition);
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.03);
+  display: flex; align-items: center; gap: 10px;
 }
 
 .option:hover {
-    background-color: #4a4a4a; /* Lighter grey on hover */
-    transform: scale(1.02);
+  background: rgba(108,92,231,0.1);
+  border-color: rgba(108,92,231,0.3);
+  color: var(--text-primary);
+  transform: translateX(4px);
 }
 
-button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #ff6f61; /* Vibrant color for the button */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+.option input[type="radio"] {
+  accent-color: var(--accent-1);
+  width: 16px; height: 16px;
 }
 
-button:hover {
-    background-color: #ff4a3d; /* Darker shade on hover */
+button, #submit {
+  display: block; width: 100%; padding: 14px;
+  background: var(--accent-gradient); color: #fff;
+  border: none; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 1rem; font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition);
 }
 
-#results {
-    margin-top: 20px;
+button:hover, #submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
 }
+
+#results { margin-top: 24px; }
 
 #scorecard {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #3a3a3a; /* Medium grey background for the scorecard */
-    border: 1px solid #444444; /* Darker grey border */
-    border-radius: 8px;
-    text-align: center;
-    color: #ffffff; /* White text for the scorecard */
+  padding: 28px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  text-align: center;
 }
 
 #scorecard h2 {
-    margin-bottom: 10px;
-    color: #ff6f61; /* Vibrant color for the scorecard title */
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem; margin-bottom: 16px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 
-#scorecard p {
-    margin: 5px 0;
-    font-size: 1.1em;
-}
-
-#scorecard .correct {
-    color: #4caf50; /* Green for correct answers */
-}
-
-#scorecard .wrong {
-    color: #ff4a3d; /* Red for wrong answers */
-}
-
+#scorecard p { margin: 8px 0; font-size: 1.05rem; }
+#scorecard .correct { color: #66bb6a; font-weight: 600; }
+#scorecard .wrong { color: #ef5350; font-weight: 600; }
 #scorecard .percentage {
-    font-weight: bold;
-    color: #007bff; /* Blue for percentage */
+  font-weight: 800; font-size: 1.3rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 
 #home-button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #ff6f61; /* Vibrant color for the button */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-    margin-top: 20px;
+  display: block; width: 100%; padding: 14px;
+  background: var(--accent-gradient); color: #fff;
+  border: none; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 1rem; font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transition); margin-top: 20px;
+}
+#home-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--accent-glow);
 }
 
-#home-button:hover {
-    background-color: #ff4a3d; /* Darker shade on hover */
+@media(max-width:600px) {
+  .quiz-container { padding: 20px; }
+  header h1 { font-size: 2rem; }
 }

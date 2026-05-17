@@ -1,9 +1,12 @@
 const express = require('express');
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -14,24 +17,38 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24h
 }));
-app.use(cors({ credentials: true, origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:8000'] }));
+app.use(cors({
+  credentials: true,
+  origin: function (origin, callback) {
+    if (!origin || /https?:\/\/localhost(:\d+)?$/.test(origin) || /https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(__dirname)); // Serve static HTML/CSS/JS from current dir
-const path = require('path');
-
+// Serve static HTML/CSS/JS from current dir
 app.use(express.static(__dirname));
 
-// API routes above this line
-
-// SPA fallback (ONLY for unknown routes)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log("✅ MongoDB Atlas Connected"))
-  .catch(err => console.log("❌ MongoDB Error:", err.message));
+// MongoDB connection with local fallback
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("✅ MongoDB Atlas Connected");
+  } catch (err) {
+    console.log("⚠️ MongoDB Atlas failed, trying local fallback:", err.message);
+    try {
+      await mongoose.connect("mongodb://127.0.0.1:27017/knowzilla");
+      console.log("✅ Local MongoDB Connected");
+    } catch (localErr) {
+      console.log("❌ MongoDB Error: Both Atlas and Local connections failed.");
+    }
+  }
+};
+connectDB();
 
 // Schemas
 const userSchema = new mongoose.Schema({
@@ -65,25 +82,91 @@ const subscriptionSchema = new mongoose.Schema({
   subscribed_at: { type: Date, default: Date.now }
 });
 
+const quizAttemptSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  username: String,
+  subject: String,
+  score: Number,
+  total: Number,
+  percentage: Number,
+  completed_at: { type: Date, default: Date.now }
+});
+
 const User = mongoose.model('User', userSchema);
 const Contact = mongoose.model('Contact', contactSchema);
 const Review = mongoose.model('Review', reviewSchema);
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
+const QuizAttempt = mongoose.model('QuizAttempt', quizAttemptSchema);
 
-// API Routes
+const userProfileSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
+  username: String,
+  registration_no: String,
+  email: String,
+  phone_no: String,
+  class: String,
+  totalQuizzes: { type: Number, default: 0 },
+  highScore: { type: Number, default: 0 },
+  avgScore: { type: Number, default: 0 },
+  updated_at: { type: Date, default: Date.now }
+});
+
+const UserProfile = mongoose.model('UserProfile', userProfileSchema);
+
+// Helper to dynamically redirect back to the client's origin (e.g. port 3000 vs 5000)
+const getRedirectUrl = (req, targetPath) => {
+  const referer = req.get('Referer');
+  if (referer) {
+    try {
+      const url = new URL(referer);
+      return `${url.origin}${targetPath}`;
+    } catch (e) {
+      // ignore
+    }
+  }
+  return targetPath;
+};
+
+// ============ API Routes ============
+
 app.post('/api/register', async (req, res) => {
   try {
     const { name, registration_no, email, phone_no, class: cls, password } = req.body;
     const hashed = await bcrypt.hash(password, 10);
     const user = new User({ name, registration_no, email, phone_no, class: cls, password: hashed });
     await user.save();
-    req.session.user = { registration_no, name }; // Set session
-    res.redirect('/index.html?success=registered');
+    
+    // Create initial UserProfile in Atlas
+    const profile = new UserProfile({
+      userId: user._id,
+      username: user.name,
+      registration_no: user.registration_no,
+      email: user.email,
+      phone_no: user.phone_no,
+      class: user.class,
+      totalQuizzes: 0,
+      highScore: 0,
+      avgScore: 0
+    });
+    await profile.save();
+
+    req.session.user = { registration_no, name };
+    if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+      return res.json({ success: true, user: { registration_no, name } });
+    }
+    res.redirect(getRedirectUrl(req, '/login.html?success=registered'));
   } catch (err) {
+    let msg = 'An unknown error occurred';
     if (err.code === 11000) {
-      res.redirect('/login.html?error=duplicate');
+      msg = 'Registration number or email already exists.';
+    }
+    if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+      return res.status(400).json({ error: msg });
+    }
+    if (err.code === 11000) {
+      res.redirect(getRedirectUrl(req, '/login.html?error=duplicate'));
     } else {
-      res.redirect('/login.html?error=unknown');
+      res.redirect(getRedirectUrl(req, '/login.html?error=unknown'));
     }
   }
 });
@@ -93,13 +176,22 @@ app.post('/api/login', async (req, res) => {
     const { registration_no, password } = req.body;
     const user = await User.findOne({ registration_no });
     if (user && await bcrypt.compare(password, user.password)) {
-      req.session.user = { registration_no, name: user.name }; // Set session
-      res.redirect('/index.html');
+      req.session.user = { registration_no, name: user.name };
+      if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+        return res.json({ success: true, user: { registration_no, name: user.name } });
+      }
+      res.redirect(getRedirectUrl(req, '/index.html'));
     } else {
-      res.redirect('/login.html?error=invalid');
+      if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+        return res.status(401).json({ error: 'Invalid credentials. Please check your registration number and password.' });
+      }
+      res.redirect(getRedirectUrl(req, '/login.html?error=invalid'));
     }
   } catch (err) {
-    res.redirect('/login.html?error=unknown');
+    if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+      return res.status(500).json({ error: 'An unknown error occurred' });
+    }
+    res.redirect(getRedirectUrl(req, '/login.html?error=unknown'));
   }
 });
 
@@ -121,9 +213,13 @@ app.post('/api/contact', async (req, res) => {
 });
 
 app.post('/api/review', async (req, res) => {
-  const { name, phone, email, message } = req.body;
-  await new Review({ name, phone, email, message }).save();
-  res.redirect('/index.html?success=1');
+  try {
+    const { name, phone, email, message } = req.body;
+    await new Review({ name, phone, email, message }).save();
+    res.json({ success: true, message: 'Review submitted successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to submit review' });
+  }
 });
 
 app.post('/api/subscribe', async (req, res) => {
@@ -155,8 +251,9 @@ app.get('/api/session', async (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/login.html');
+  req.session.destroy(() => {
+    res.json({ success: true });
+  });
 });
 
 app.get('/api/reviews', async (req, res) => {
@@ -164,6 +261,171 @@ app.get('/api/reviews', async (req, res) => {
   res.json(reviews);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Quiz Score Submission
+app.post('/api/submit-score', async (req, res) => {
+  try {
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized. Please login first.' });
+    }
+    const { subject, score, total, percentage } = req.body;
+    const user = await User.findOne({ registration_no: req.session.user.registration_no });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    const attempt = new QuizAttempt({
+      userId: user._id,
+      username: user.name,
+      subject,
+      score,
+      total,
+      percentage,
+      completed_at: new Date()
+    });
+    await attempt.save();
 
+    // Fetch attempts to aggregate
+    const attempts = await QuizAttempt.find({ userId: user._id });
+    const totalQuizzes = attempts.length;
+    const highScore = attempts.reduce((max, a) => Math.max(max, a.percentage), 0);
+    const avgScore = totalQuizzes > 0
+      ? Math.round(attempts.reduce((sum, a) => sum + a.percentage, 0) / totalQuizzes)
+      : 0;
+
+    // Update UserProfile
+    await UserProfile.findOneAndUpdate(
+      { userId: user._id },
+      {
+        username: user.name,
+        registration_no: user.registration_no,
+        email: user.email,
+        phone_no: user.phone_no,
+        class: user.class,
+        totalQuizzes,
+        highScore,
+        avgScore,
+        updated_at: new Date()
+      },
+      { upsert: true }
+    );
+
+    res.json({ success: true, message: 'Score submitted successfully!' });
+  } catch (err) {
+    console.error('Submit score error:', err);
+    res.status(500).json({ error: 'Failed to submit score.' });
+  }
+});
+
+// User Profile Stats & History
+app.get('/api/profile', async (req, res) => {
+  try {
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const user = await User.findOne({ registration_no: req.session.user.registration_no });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find UserProfile or create it on the fly if missing (for old users)
+    let profile = await UserProfile.findOne({ userId: user._id });
+    if (!profile) {
+      const attempts = await QuizAttempt.find({ userId: user._id });
+      const totalQuizzes = attempts.length;
+      const highScore = attempts.reduce((max, a) => Math.max(max, a.percentage), 0);
+      const avgScore = totalQuizzes > 0
+        ? Math.round(attempts.reduce((sum, a) => sum + a.percentage, 0) / totalQuizzes)
+        : 0;
+
+      profile = new UserProfile({
+        userId: user._id,
+        username: user.name,
+        registration_no: user.registration_no,
+        email: user.email,
+        phone_no: user.phone_no,
+        class: user.class,
+        totalQuizzes,
+        highScore,
+        avgScore
+      });
+      await profile.save();
+    }
+
+    const attempts = await QuizAttempt.find({ userId: user._id }).sort({ completed_at: -1 });
+    
+    res.json({
+      user: {
+        name: profile.username || user.name,
+        registration_no: profile.registration_no || user.registration_no,
+        email: profile.email || user.email,
+        phone_no: profile.phone_no || user.phone_no,
+        class: profile.class || user.class
+      },
+      stats: {
+        totalQuizzes: profile.totalQuizzes,
+        highScore: profile.highScore,
+        avgScore: profile.avgScore
+      },
+      attempts
+    });
+  } catch (err) {
+    console.error('Profile fetch error:', err);
+    res.status(500).json({ error: 'Failed to load profile data' });
+  }
+});
+
+// Leaderboard stand-out ranking
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    const activeProfiles = await UserProfile.find().sort({ highScore: -1, totalQuizzes: -1 }).limit(20);
+    const leaderboard = activeProfiles.map(p => ({
+      _id: p.userId,
+      username: p.username,
+      highScore: p.highScore,
+      totalQuizzes: p.totalQuizzes
+    }));
+    res.json(leaderboard);
+  } catch (err) {
+    console.error('Leaderboard fetch error:', err);
+    res.status(500).json({ error: 'Failed to load leaderboard' });
+  }
+});
+
+// SPA fallback — MUST be after all API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+const listenWithFallback = (expressApp, preferredPort, label, onListening) => {
+  const startPort = Number(preferredPort) || 0;
+  const server = expressApp.listen(startPort);
+
+  server.on('listening', () => {
+    const { port } = server.address();
+    console.log(`${label} running on http://localhost:${port}`);
+    if (onListening) onListening(port);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && startPort > 0) {
+      const nextPort = startPort + 1;
+      console.log(`Port ${startPort} is busy, trying ${nextPort}...`);
+      listenWithFallback(expressApp, nextPort, label, onListening);
+      return;
+    }
+
+    throw err;
+  });
+};
+
+const PORT = process.env.PORT || 5000;
+listenWithFallback(app, PORT, 'API server', (port) => {
+  console.log(`Open the website at http://localhost:${port}/index.html`);
+});
+
+// Start separate frontend static website server on port 3000
+const frontendApp = express();
+frontendApp.use(express.static(__dirname));
+frontendApp.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+listenWithFallback(frontendApp, process.env.FRONTEND_PORT || 3000, 'Static website');

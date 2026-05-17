@@ -1,396 +1,310 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <!-- basic -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- mobile metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <!-- site metas -->
-    <title>Knowzilla</title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- bootstrap css -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- style css -->
-    <link rel="stylesheet" href="css/style.css">
-    <!-- responsive-->
-    <link rel="stylesheet" href="css/responsive.css">
-    <!-- awesome fontfamily -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
-</head>
-<!-- body -->
-<body class="main-layout">
-    <!-- loader  -->
-    <div class="loader_bg">
-        <div class="loader"><img src="images/loading.gif" alt="" /></div>
-    </div>
-    <!-- end loader -->
-    <!-- header -->
-    <header>
-        <div class="header">
-            <div class="container-fluid">
-                <div class="row d_flex">
-                    <div class="col-md-2 col-sm-3 col logo_section">
-                        <div class="full">
-                            <div class="center-desk">
-                                <div class="logo">KNOWZILLA TRIVIA GAME
-                                    <a href="index.html"><img src="logo.png" width="30" height="20"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8 col-sm-9">
-                        <nav class="navigation navbar navbar-expand-md navbar-dark ">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                            <div class="collapse navbar-collapse" id="navbarsExample04">
-                                <ul class="navbar-nav mr-auto">
-                                    <li class="nav-item active">
-                                        <a class="nav-link" href="index.html">Home</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="about.html">About</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="login.html">Login&nbsp;</a>
-                                    </li>
-                                    <!-- Display username if logged in (Node session) -->
-                                    <li class="nav-item" id="user-welcome" style="display: none;">
-                                        <span class="nav-link">Welcome, <span id="username-display"></span></span>
-                                    </li>
-                                    <li class="nav-item" id="logout-link" style="display: none;">
-                                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
-                                    </li>
-                                </ul>
-                                <script>
-                                async function loadUser() {
-                                    try {
-                                        const res = await fetch('/api/session', { credentials: 'include' });
-                                        const data = await res.json();
-                                        if (data.user) {
-                                            document.getElementById('username-display').textContent = data.user.name;
-                                            document.getElementById('user-welcome').style.display = 'list-item';
-                                            document.getElementById('logout-link').style.display = 'list-item';
-                                        }
-                                    } catch (err) {
-                                        console.log('Not logged in');
-                                    }
-                                }
-                                async function logout() {
-                                    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
-                                    location.reload();
-                                }
-                                loadUser();
-                                </script>
-                            </div>
-                        </nav>
-                    </div>
-                    <div class="col-md-2 d_none">
-                        <ul class="email text_align_right">
-                            <!-- Additional email or contact links can go here -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <!-- end header -->
-    <!-- start slider section -->
-    <div id="top_section" class="banner_main">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                            <li data-target="#myCarousel" data-slide-to="1"></li>
-                            <li data-target="#myCarousel" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="container-fluid">
-                                    <div class="carousel-caption relative">
-                                        <div class="bluid">
-                                            <h1> GROW YOUR</h1>
-                                            <h1>KNOWLEDGE&nbsp;</h1>
-                                            <p><br></p>
-                                            <a class="read_more" href="java.html"style="color:black;">JAVA</a>
-                                            <a class="read_more" href="html.html"style="color:black;"> HTML</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="container-fluid">
-                                    <div class="carousel-caption relative">
-                                        <div class="bluid">
-                                            <h1>GROW YOUR<br>KNOWLEDGE </h1>
-                                            <p><br></p>
-                                            <a class="read_more" href="C.html"style="color:black;">C </a>
-                                            <a class="read_more" href="c++.html"style="color:black;">C++</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="container-fluid">
-                                    <div class="carousel-caption relative">
-                                        <div class="bluid">
-                                            <h1>GROW YOUR  <br>KNOWLEDGE </h1>
-                                            <a class="read_more" href="python.html"style="color:black;">PYTHON</a>
-                                            <a class="read_more" href="javascript.html"style="color:black;">JAVASCRIPT</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end slider section -->
-    <!-- we_do -->
-    <div class="we_do">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="titlepage text_align_center">
-                        <h2>&nbsp; </h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="we1" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#we1" data-slide-to="0" class="active"></li>
-                            <li data-target="#we1" data-slide-to="1"></li>
-                            <li data-target="#we1" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="container-fluid">
-                                    <div class="carousel-caption we1_do">
-                                        <div class="row">
-                                            <!-- Content for the first carousel item -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="container-fluid">
-                                    <div class="carousel-caption we1_do">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div id="bo_ho" class="we_box text_align_left">
-                                                    <i><a href="java.html"><img src="images/we1.png" alt="#"/></a></i>
-                                                    <h3><a href="java.html">JAVA </a></h3>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div id="bo_ho" class="we_box text_align_left">
-                                                    <i><a href="html.html"><img src="images/we2.png" alt="#"/></a></i>
-                                                    <h3><a href="html.html">HTML </a></h3>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div id="bo_ho" class="we_box text_align_left">
-                                                    <i><a href="C.html"><img src="images/we3.png" alt="#"/></a></i>
-                                                    <h3><a href="C.html">C </a></h3>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="container-fluid">
-                                    <div class="carousel-caption we1_do">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div id="bo_ho" class="we_box text_align_left">
-                                                    <i><a href="c++.html"><img src="images/we4.png" alt="#"/></a></i>
-                                                    <h3><a href="c++.html">C++ </a></h3>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div id="bo_ho" class="we_box text_align_left">
-                                                    <i><a href="python.html"><img src="images/we5.png" alt="#"/></a></i>
-                                                    <h3><a href="python.html">PYTHON </a></h3>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div id="bo_ho" class="we_box text_align_left">
-                                                    <i><a href="javascript.html"><img src="images/we6.png" alt="#"/></a></i>
-                                                    <h3><a href="javascript.html">JAVASCRIPT</a></h3>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#we1" role="button" data-slide="prev">
-                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#we1" role="button" data-slide="next">
-                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end we_do -->
-    <!-- contact -->
-    <div class="contact">
-        <div class="container">
-            <div class="row ">
-                <div class="col-md-6">
-                    <div class="titlepage text_align_left">
-                        <h2>REVIEW&nbsp;</h2>
-                    </div>
-                    <form id="review-form" class="main_form" >
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input class="contactus" placeholder="Name" type="text" name="name" id="review-name" required>
-                            </div>
-                            <div class="col-md-12">
-                                <input class="contactus" placeholder="Phone Number" type="text" name="phone" id="review-phone">
-                            </div>
-                            <div class="col-md-12">
-                                <input class="contactus" placeholder="Email" type="email" name="email" id="review-email" required>
-                            </div>
-                            <div class="col-md-12">
-                                <textarea class="textarea" placeholder="Message" name="message" id="review-message" required></textarea>
-                            </div>
-                            <div class="col-md-12">
-                                <button class="send_btn" type="submit" id="review-submit">Send Now</button>
-                            </div>
-                        </div>
-                    </form>
 
-                    <script>
-                        document.getElementById('review-form').addEventListener('submit', async (e) => {
-                            e.preventDefault();
-                            const formData = new FormData(e.target);
-                            const data = Object.fromEntries(formData);
-                            try {
-                                const res = await fetch('/api/review', {
-                                    method: 'POST',
-                                    headers: {'Content-Type': 'application/json'},
-                                    body: JSON.stringify(data)
-                                });
-                                if (res.redirected) {
-                                    window.location.href = res.url;
-                                } else {
-                                    alert('Review submitted!');
-                                }
-                            } catch (err) {
-                                alert('Error: ' + err);
-                            }
-                        });
-                    </script>
-                    
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Knowzilla — Master Programming Through Quizzes</title>
+    <meta name="description"
+        content="Knowzilla is a powerful trivia game platform to test and grow your programming knowledge across Java, Python, C, C++, HTML and JavaScript.">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="logo.png">
+</head>
+
+<body>
+
+    <!-- Loader -->
+    <div class="loader_bg" id="loader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="kz-navbar" id="navbar">
+        <a href="index.html" class="brand">
+            <img src="logo.png" alt="Knowzilla Logo"> KNOWZILLA
+        </a>
+        <ul class="kz-nav-links" id="navLinks">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li><li id="dashboard-li" style="display:none;"><a href="profile.html">Dashboard</a></li>
+        <li id="user-welcome-li" style="display:none;"><span class="user-badge"><i class="fa-solid fa-user-circle"></i> <span id="username-display"></span></span></li>
+            <li id="logout-li" style="display:none;"><a href="#" onclick="logoutUser()" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            <li id="login-li"><a href="login.html" class="nav-btn">Login</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg-orbs">
+            <div class="orb"></div>
+            <div class="orb"></div>
+            <div class="orb"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">🧠 Quiz Trivia Platform</div>
+            <h1>Grow Your<br><span class="gradient-text">Knowledge</span></h1>
+            <p>Challenge yourself with programming quizzes across 6 languages. Learn, compete, and track your progress —
+                all in one place.</p>
+            <div class="hero-buttons">
+                <a href="#categories" class="btn-primary"><i class="fa-solid fa-rocket"></i> Start a Quiz</a>
+                <a href="about.html" class="btn-outline"><i class="fa-solid fa-circle-info"></i> Learn More</a>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="6">0</div>
+                    <div class="stat-label">Languages</div>
                 </div>
-                <div class="col-md-6">
-                    <div class="titlepage text_align_left">
-                        <h2>ABOUT PAGE</h2>
-                    </div>
-                    <div id="clientsl" class="carousel slide our_clientsl" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#clientsl" data-slide-to="0" class="active"></li>
-                            <li data-target="#clientsl" data-slide-to="1"></li>
-                            <li data-target="#clientsl" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="container">
-                                    <div class="carousel-caption posi_in">
-                                        <div class="clientsl_text">
-                                            <h3>QUIZ <img src="images/icon.png" alt="#"/></h3>
-                                            <p>"Knowzilla" is a creative name combining "Know" (representing knowledge) and "zilla" (a suffix often used to indicate something big or powerful). The name suggests a platform that provides powerful and expansive knowledge, possibly through quizzes, educational content, or informative activities.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="container">
-                                    <div class="carousel-caption posi_in">
-                                        <div class="clientsl_text">
-                                            <h3>QUIZ<img src="images/icon.png" alt="#"/></h3>
-                                            <p>"Knowzilla" is a creative name combining "Know" (representing knowledge) and "zilla" (a suffix often used to indicate something big or powerful). The name suggests a platform that provides powerful and expansive knowledge, possibly through quizzes, educational content, or informative activities.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="container">
-                                    <div class="carousel-caption posi_in">
-                                        <div class="clientsl_text">
-                                            <h3>QUIZ <img src="images/icon.png" alt="#"/></h3>
-                                            <p>"Knowzilla" is a creative name combining "Know" (representing knowledge) and "zilla" (a suffix often used to indicate something big or powerful). The name suggests a platform that provides powerful and expansive knowledge, possibly through quizzes, educational content, or informative activities.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#clientsl" role="button" data-slide="prev">
-                            <i class="fa fa-angle-left" aria-hidden="true"></i>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#clientsl" role="button" data-slide="next">
-                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="200">0</div>
+                    <div class="stat-label">Questions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="12">0</div>
+                    <div class="stat-label">Quizzes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Users</div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- contact -->
-    <!-- footer -->
-    <div class="copyright text_align_left">
-        <div class="container">
-            <div class="row d_flex">
-                <div class="col-md-6">
-                    <p>© 2025 All Rights Reserved.</p>
+    </section>
+
+    <!-- Quiz Categories -->
+    <section id="categories" style="padding:80px 0;">
+        <div class="section-title">
+            <h2>Choose Your <span class="gradient-text">Language</span></h2>
+            <p>Pick a programming language and test your skills with curated quizzes and learning material.</p>
+        </div>
+        <div class="categories-grid">
+            <a href="java.html" class="cat-card" data-lang="java">
+                <div class="cat-icon"><i class="fa-brands fa-java"></i></div>
+                <h3>Java</h3>
+                <p>Object-oriented programming, JVM, data structures and more.</p>
+                <div class="cat-meta"><span>📝 2 Tests</span><span>📖 30+ Questions</span></div>
+            </a>
+            <a href="html.html" class="cat-card" data-lang="html">
+                <div class="cat-icon"><i class="fa-brands fa-html5"></i></div>
+                <h3>HTML</h3>
+                <p>Web structure, semantic elements, forms and accessibility.</p>
+                <div class="cat-meta"><span>📝 2 Tests</span><span>📖 30+ Questions</span></div>
+            </a>
+            <a href="C.html" class="cat-card" data-lang="c">
+                <div class="cat-icon">C</div>
+                <h3>C Language</h3>
+                <p>Pointers, memory management, structs and system programming.</p>
+                <div class="cat-meta"><span>📝 2 Tests</span><span>📖 30+ Questions</span></div>
+            </a>
+            <a href="c++.html" class="cat-card" data-lang="cpp">
+                <div class="cat-icon">C++</div>
+                <h3>C++</h3>
+                <p>OOP, STL, templates, and modern C++ concepts.</p>
+                <div class="cat-meta"><span>📝 2 Tests</span><span>📖 30+ Questions</span></div>
+            </a>
+            <a href="python.html" class="cat-card" data-lang="python">
+                <div class="cat-icon"><i class="fa-brands fa-python"></i></div>
+                <h3>Python</h3>
+                <p>Scripting, data science basics, libraries and algorithms.</p>
+                <div class="cat-meta"><span>📝 2 Tests</span><span>📖 30+ Questions</span></div>
+            </a>
+            <a href="javascript.html" class="cat-card" data-lang="js">
+                <div class="cat-icon"><i class="fa-brands fa-js"></i></div>
+                <h3>JavaScript</h3>
+                <p>DOM manipulation, ES6+, async programming and frameworks.</p>
+                <div class="cat-meta"><span>📝 2 Tests</span><span>📖 30+ Questions</span></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Review + About Section -->
+    <section class="form-section" id="review-section">
+        <div class="form-grid">
+            <div>
+                <div class="section-title" style="text-align:left; margin-bottom:32px;">
+                    <h2>Leave a <span class="gradient-text">Review</span></h2>
+                    <p>We'd love to hear your feedback about Knowzilla.</p>
                 </div>
-                <div class="col-md-6">
-                    <ul class="social_icon text_align_center">
-                        <li><a href="https://www.facebook.com/profile.php?id=61573475626834"><i class="fa fa-facebook-f"></i></a></li>
-                        <li><a href="Javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="https://t.me/+WkMyF8mOlGMzMTI9"><i class="fa fa-telegram" aria-hidden="true"></i></a></li>
-                        <li><a href="Javascript:void(0)"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                        <li><a href="Javascript:void(0)"><i class="fa fa-youtube-play" aria-hidden="true"></i></a></li>
+                <form id="review-form" class="kz-form">
+                    <input class="kz-input" placeholder="Your Name" type="text" name="name" id="review-name" required>
+                    <input class="kz-input" placeholder="Phone Number" type="text" name="phone" id="review-phone">
+                    <input class="kz-input" placeholder="Email Address" type="email" name="email" id="review-email"
+                        required>
+                    <textarea class="kz-input" placeholder="Your message..." name="message" id="review-message"
+                        required></textarea>
+                    <button type="submit" class="btn-primary" id="review-submit" style="width:fit-content;">
+                        <i class="fa-solid fa-paper-plane"></i> Send Review
+                    </button>
+                </form>
+            </div>
+            <div class="info-panel glass">
+                <h3>What is <span class="gradient-text">Knowzilla</span>?</h3>
+                <p style="margin-bottom:20px;">
+                    "Knowzilla" combines <strong>Know</strong> (knowledge) and <strong>zilla</strong> (something
+                    powerful).
+                    It's a platform that provides expansive knowledge through interactive quizzes and educational
+                    content.
+                </p>
+                <p style="margin-bottom:20px;">
+                    Designed for education, entertainment, skill development, and professional assessments — Knowzilla
+                    helps users
+                    reinforce learning, prepare for exams, and conduct self-assessments across various programming
+                    topics.
+                </p>
+                <div
+                    style="padding:20px; background:rgba(108,92,231,0.1); border-radius:12px; border:1px solid rgba(108,92,231,0.2); margin-top:24px;">
+                    <p style="font-size:.85rem; color:var(--accent-2); font-weight:600; margin-bottom:8px;">🎯 KEY
+                        FEATURES</p>
+                    <ul style="list-style:none; font-size:.9rem; color:var(--text-secondary);">
+                        <li style="margin-bottom:6px;">✓ 6 Programming Languages</li>
+                        <li style="margin-bottom:6px;">✓ Instant Score Results</li>
+                        <li style="margin-bottom:6px;">✓ Reference Material & PPTs</li>
+                        <li>✓ User Authentication</li>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- end footer -->
-    <!-- Javascript files-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/jquery-3.0.0.min.js"></script>
-    <script src="js/custom.js"></script>
-   </body>
-   </html>
+    </section>
+
+    <!-- Footer -->
+    <footer class="kz-footer">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand">KNOWZILLA</div>
+                <p style="color:var(--text-secondary); font-size:.9rem; max-width:320px; margin-bottom:16px;">
+                    A versatile quiz platform designed for education, entertainment, and skill development.
+                </p>
+                <form class="newsletter-bar" id="subscribe-form">
+                    <input type="email" placeholder="Your email" id="subscribe-email" required>
+                    <button type="submit" id="subscribe-submit">Subscribe</button>
+                </form>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Languages</h4>
+                <ul>
+                    <li><a href="java.html">Java</a></li>
+                    <li><a href="html.html">HTML</a></li>
+                    <li><a href="C.html">C</a></li>
+                    <li><a href="c++.html">C++</a></li>
+                    <li><a href="python.html">Python</a></li>
+                    <li><a href="javascript.html">JavaScript</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="tel:+916369562212"><i class="fa-solid fa-phone"></i> +91 6369562212</a></li>
+                    <li><a href="mailto:dekusai100@gmail.com"><i class="fa-solid fa-envelope"></i>
+                            dekusai100@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Knowzilla. All Rights Reserved.</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61573475626834" target="_blank"
+                    aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://t.me/+WkMyF8mOlGMzMTI9" target="_blank" aria-label="Telegram"><i
+                        class="fa-brands fa-telegram"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Loader
+        setTimeout(() => document.getElementById('loader').style.display = 'none', 1200);
+
+        // Navbar scroll
+        window.addEventListener('scroll', () => {
+            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Hamburger
+        document.getElementById('hamburger').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // Animated counters
+        const counters = document.querySelectorAll('.stat-number');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = +el.dataset.target;
+                    let count = 0;
+                    const increment = target / 40;
+                    const timer = setInterval(() => {
+                        count += increment;
+                        if (count >= target) { el.textContent = target + '+'; clearInterval(timer); }
+                        else el.textContent = Math.ceil(count);
+                    }, 40);
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(c => observer.observe(c));
+
+        // Toast helper
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.className = 'toast ' + type + ' show';
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        const API_BASE = (window.location.port && window.location.port !== '5000') || window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
+
+        // Review form
+        document.getElementById('review-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            try {
+                const res = await fetch(API_BASE + '/api/review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                showToast('Review submitted successfully! 🎉');
+                e.target.reset();
+            } catch (err) { showToast('Error submitting review', 'error'); }
+        });
+
+        // Subscribe
+        document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('subscribe-email').value;
+            try {
+                const res = await fetch(API_BASE + '/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }), credentials: 'include' });
+                const result = await res.json();
+                if (result.success) { showToast(result.message || 'Subscribed! 📧'); document.getElementById('subscribe-email').value = ''; }
+                else showToast(result.error || 'Error subscribing', 'error');
+            } catch (err) { showToast('Error subscribing', 'error'); }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                const target = document.querySelector(a.getAttribute('href'));
+                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+            });
+        });
+    </script>
+<script src="js/session-ui.js"></script>
+</body>
+
+</html>
+
+
