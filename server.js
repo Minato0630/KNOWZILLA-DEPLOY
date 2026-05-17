@@ -11,16 +11,27 @@ require('dotenv').config();
 
 const app = express();
 app.use(cookieParser());
+const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
-  secret: 'knowzilla-secret-key-change-in-prod',
+  secret: process.env.SESSION_SECRET || 'knowzilla-secret-key-change-in-prod',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 } // 24h
+  cookie: {
+    secure: isProduction,          // HTTPS only on Vercel
+    sameSite: isProduction ? 'none' : 'lax',  // cross-origin cookies on Vercel
+    maxAge: 24 * 60 * 60 * 1000   // 24h
+  }
 }));
 app.use(cors({
   credentials: true,
   origin: function (origin, callback) {
-    if (!origin || /https?:\/\/localhost(:\d+)?$/.test(origin) || /https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) {
+    // Allow no-origin (same-origin), localhost, 127.0.0.1, and *.vercel.app
+    if (
+      !origin ||
+      /https?:\/\/localhost(:\d+)?$/.test(origin) ||
+      /https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin) ||
+      /https?:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin)
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
