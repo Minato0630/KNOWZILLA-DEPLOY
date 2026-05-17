@@ -2,7 +2,8 @@ const express = require('express');
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const ConnectMongo = require('connect-mongo');
+const MongoStore = ConnectMongo.default || ConnectMongo.MongoStore || ConnectMongo;
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -11,6 +12,7 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+const mongoUrl = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/knowzilla';
 app.set('trust proxy', 1); // Required for Vercel/reverse proxy — fixes sessions & secure cookies
 app.use(cookieParser());
 const isProduction = process.env.NODE_ENV === 'production';
@@ -20,13 +22,13 @@ app.use(session({
   saveUninitialized: false,
   // Persist sessions in MongoDB Atlas so they survive across Vercel serverless instances
   store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/knowzilla',
+    mongoUrl,
     collectionName: 'sessions',
     ttl: 24 * 60 * 60  // 24 hours in seconds
   }),
   cookie: {
     secure: isProduction,          // HTTPS only on Vercel
-    sameSite: isProduction ? 'none' : 'lax',
+    sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000   // 24h in ms
   }
 }));
@@ -53,20 +55,30 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // MongoDB connection
+let dbReadyPromise = null;
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    console.error("❌ MONGODB_URI environment variable is not set! Please add it in Vercel Dashboard → Settings → Environment Variables");
-    return;
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
   }
-  try {
-    await mongoose.connect(uri);
+
+  if (dbReadyPromise) {
+    return dbReadyPromise;
+  }
+
+  dbReadyPromise = mongoose.connect(mongoUrl, { serverSelectionTimeoutMS: 8000 })
+  .then(() => {
     console.log("✅ MongoDB Atlas Connected");
-  } catch (err) {
+    return mongoose.connection;
+  })
+  .catch((err) => {
+    dbReadyPromise = null;
     console.error("❌ MongoDB connection failed:", err.message);
-  }
+    throw err;
+  });
+
+  return dbReadyPromise;
 };
-connectDB();
+connectDB().catch(() => {});
 
 // Schemas
 const userSchema = new mongoose.Schema({
@@ -145,6 +157,23 @@ const getRedirectUrl = (req, targetPath) => {
   return targetPath;
 };
 
+const wantsJson = (req) =>
+  req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'));
+
+const finishSessionResponse = (req, res, sendResponse) => {
+  req.session.save((err) => {
+    if (err) {
+      console.error('Session save error:', err);
+      if (wantsJson(req)) {
+        return res.status(500).json({ error: 'Login succeeded, but the session could not be saved. Please try again.' });
+      }
+      return res.redirect(getRedirectUrl(req, '/login.html?error=session'));
+    }
+
+    sendResponse();
+  });
+};
+
 // ============ API Routes ============
 
 app.post('/api/register', async (req, res) => {
@@ -169,16 +198,19 @@ app.post('/api/register', async (req, res) => {
     await profile.save();
 
     req.session.user = { registration_no, name };
-    if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
-      return res.json({ success: true, user: { registration_no, name } });
-    }
-    res.redirect(getRedirectUrl(req, '/login.html?success=registered'));
+    finishSessionResponse(req, res, () => {
+      if (wantsJson(req)) {
+        return res.json({ success: true, user: { registration_no, name } });
+      }
+      return res.redirect(getRedirectUrl(req, '/profile.html'));
+    });
   } catch (err) {
     let msg = 'An unknown error occurred';
     if (err.code === 11000) {
       msg = 'Registration number or email already exists.';
     }
-    if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+    console.error('Register error:', err);
+    if (wantsJson(req)) {
       return res.status(400).json({ error: msg });
     }
     if (err.code === 11000) {
@@ -195,18 +227,21 @@ app.post('/api/login', async (req, res) => {
     const user = await User.findOne({ registration_no });
     if (user && await bcrypt.compare(password, user.password)) {
       req.session.user = { registration_no, name: user.name };
-      if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
-        return res.json({ success: true, user: { registration_no, name: user.name } });
-      }
-      res.redirect(getRedirectUrl(req, '/index.html'));
+      finishSessionResponse(req, res, () => {
+        if (wantsJson(req)) {
+          return res.json({ success: true, user: { registration_no, name: user.name } });
+        }
+        return res.redirect(getRedirectUrl(req, '/profile.html'));
+      });
     } else {
-      if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+      if (wantsJson(req)) {
         return res.status(401).json({ error: 'Invalid credentials. Please check your registration number and password.' });
       }
       res.redirect(getRedirectUrl(req, '/login.html?error=invalid'));
     }
   } catch (err) {
-    if (req.xhr || (req.headers['accept'] && req.headers['accept'].includes('application/json'))) {
+    console.error('Login error:', err);
+    if (wantsJson(req)) {
       return res.status(500).json({ error: 'An unknown error occurred' });
     }
     res.redirect(getRedirectUrl(req, '/login.html?error=unknown'));

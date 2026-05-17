@@ -202,6 +202,9 @@ if (error === 'invalid') {
 } else if (error === 'unknown') {
     document.getElementById('loginMsg').className = 'auth-msg error';
     document.getElementById('loginMsg').textContent = '❌ An unknown error occurred. Please try again.';
+} else if (error === 'session') {
+    document.getElementById('loginMsg').className = 'auth-msg error';
+    document.getElementById('loginMsg').textContent = '❌ Login completed, but your session was not saved. Please try again.';
 }
 if (success === 'registered') {
     document.getElementById('loginMsg').className = 'auth-msg success';
@@ -237,10 +240,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const result = await res.json();
         if (res.ok && result.success) {
             msgEl.className = 'auth-msg success';
-            msgEl.textContent = '✅ Login successful! Redirecting...';
+            msgEl.textContent = '✅ Login successful! Opening dashboard...';
             msgEl.style.display = 'block';
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'profile.html';
             }, 1000);
         } else {
             msgEl.className = 'auth-msg error';
@@ -277,10 +280,10 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         const result = await res.json();
         if (res.ok && result.success) {
             msgEl.className = 'auth-msg success';
-            msgEl.textContent = '✅ Registration successful! Logging in...';
+            msgEl.textContent = '✅ Registration successful! Opening dashboard...';
             msgEl.style.display = 'block';
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'profile.html';
             }, 1000);
         } else {
             msgEl.className = 'auth-msg error';
