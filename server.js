@@ -10,6 +10,7 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+app.set('trust proxy', 1); // Required for Vercel/reverse proxy — fixes sessions & secure cookies
 app.use(cookieParser());
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
@@ -44,19 +45,18 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static HTML/CSS/JS from current dir
 app.use(express.static(__dirname));
 
-// MongoDB connection with local fallback
+// MongoDB connection
 const connectDB = async () => {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    console.error("❌ MONGODB_URI environment variable is not set! Please add it in Vercel Dashboard → Settings → Environment Variables");
+    return;
+  }
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(uri);
     console.log("✅ MongoDB Atlas Connected");
   } catch (err) {
-    console.log("⚠️ MongoDB Atlas failed, trying local fallback:", err.message);
-    try {
-      await mongoose.connect("mongodb://127.0.0.1:27017/knowzilla");
-      console.log("✅ Local MongoDB Connected");
-    } catch (localErr) {
-      console.log("❌ MongoDB Error: Both Atlas and Local connections failed.");
-    }
+    console.error("❌ MongoDB connection failed:", err.message);
   }
 };
 connectDB();

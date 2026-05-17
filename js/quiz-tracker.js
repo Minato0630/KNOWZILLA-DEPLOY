@@ -19,9 +19,10 @@
     else if (subject === 'C') subject = 'C';
     else if (!subject) subject = 'GENERAL';
 
-    // Route to port 5000 if static website is running on another port
-    const API_BASE = (window.location.port && window.location.port !== '5000') || window.location.protocol === 'file:' 
-        ? 'http://localhost:5000' 
+    // On Vercel (production), the API is on the same domain — use relative URL.
+    // On localhost dev with separate ports, point to port 5000.
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000'
         : '';
 
     try {

@@ -2,7 +2,9 @@
 // Checks session, shows username, handles logout
 
 (function() {
-    const API_BASE = (window.location.port && window.location.port !== '5000') || window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000'
+        : '';
 
     async function initSession() {
         const dashboardEl = document.getElementById('dashboard-li');
