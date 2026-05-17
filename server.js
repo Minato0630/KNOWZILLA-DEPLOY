@@ -108,7 +108,7 @@ const reviewSchema = new mongoose.Schema({
 });
 
 const subscriptionSchema = new mongoose.Schema({
-  email: { type: String, unique: true },
+  email: { type: String, unique: true, trim: true, lowercase: true },
   subscribed_at: { type: Date, default: Date.now }
 });
 
@@ -173,6 +173,13 @@ const finishSessionResponse = (req, res, sendResponse) => {
     sendResponse();
   });
 };
+
+const waitForDb = (timeoutMs = 7000) => Promise.race([
+  connectDB(),
+  new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('Database connection timed out')), timeoutMs);
+  })
+]);
 
 // ============ API Routes ============
 
@@ -277,21 +284,33 @@ app.post('/api/review', async (req, res) => {
 
 app.post('/api/subscribe', async (req, res) => {
   try {
-    console.log('Subscribe data:', req.body);
-    const { email } = req.body;
+    await waitForDb();
+
+    const email = String(req.body.email || '').trim().toLowerCase();
     if (!email) {
       return res.status(400).json({ error: 'Email required' });
     }
-    const subscription = new Subscription({ email });
-    await subscription.save();
-    console.log('Subscription saved:', subscription._id);
-    res.json({ success: true, message: 'Subscribed successfully!' });
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: 'Please enter a valid email address' });
+    }
+
+    const result = await Subscription.updateOne(
+      { email },
+      { $setOnInsert: { email, subscribed_at: new Date() } },
+      { upsert: true }
+    );
+
+    res.json({
+      success: true,
+      message: result.upsertedCount ? 'Subscribed successfully!' : 'You are already subscribed.'
+    });
   } catch (err) {
     console.error('Subscribe error:', err);
     if (err.code === 11000) {
-      return res.status(409).json({ error: 'Email already subscribed' });
+      return res.json({ success: true, message: 'You are already subscribed.' });
     }
-    res.status(500).json({ error: 'Failed to subscribe' });
+    res.status(503).json({ error: 'Subscription service is temporarily unavailable. Please try again soon.' });
   }
 });
 
