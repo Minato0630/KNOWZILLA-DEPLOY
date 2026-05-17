@@ -1,55 +1,28 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
+    { "src": "server.js", "use": "@vercel/node" },
+    { "src": "css/**", "use": "@vercel/static" },
+    { "src": "js/**", "use": "@vercel/static" },
+    { "src": "images/**", "use": "@vercel/static" },
+    { "src": "fonts/**", "use": "@vercel/static" },
+    { "src": "icon/**", "use": "@vercel/static" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "logo.png", "use": "@vercel/static" },
+    { "src": "*.css", "use": "@vercel/static" },
+    { "src": "*.js", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/css/(.+)",
-      "dest": "/css/$1"
-    },
-    {
-      "src": "/js/(.+)",
-      "dest": "/js/$1"
-    },
-    {
-      "src": "/images/(.+)",
-      "dest": "/images/$1"
-    },
-    {
-      "src": "/fonts/(.+)",
-      "dest": "/fonts/$1"
-    },
-    {
-      "src": "/icon/(.+)",
-      "dest": "/icon/$1"
-    },
-    {
-      "src": "/.+\\.(html|css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|pptx|map)",
-      "dest": "/$0"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/server.js"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/css/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" },
-        { "key": "Content-Type", "value": "text/css; charset=utf-8" }
-      ]
-    },
-    {
-      "source": "/js/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" },
-        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" }
-      ]
-    }
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/css/(.*)", "dest": "/css/$1" },
+    { "src": "/js/(.*)", "dest": "/js/$1" },
+    { "src": "/images/(.*)", "dest": "/images/$1" },
+    { "src": "/fonts/(.*)", "dest": "/fonts/$1" },
+    { "src": "/icon/(.*)", "dest": "/icon/$1" },
+    { "src": "/logo.png", "dest": "/logo.png" },
+    { "src": "/(.*\\.html)", "dest": "/$1" },
+    { "src": "/(.*\\.css)", "dest": "/$1" },
+    { "src": "/(.*\\.js)", "dest": "/$1" },
+    { "src": "/(.*)", "dest": "/server.js" }
   ]
 }
