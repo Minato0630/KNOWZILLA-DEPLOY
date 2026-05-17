@@ -2,6 +2,7 @@ const express = require('express');
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -17,10 +18,16 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'knowzilla-secret-key-change-in-prod',
   resave: false,
   saveUninitialized: false,
+  // Persist sessions in MongoDB Atlas so they survive across Vercel serverless instances
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/knowzilla',
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60  // 24 hours in seconds
+  }),
   cookie: {
     secure: isProduction,          // HTTPS only on Vercel
-    sameSite: isProduction ? 'none' : 'lax',  // cross-origin cookies on Vercel
-    maxAge: 24 * 60 * 60 * 1000   // 24h
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000   // 24h in ms
   }
 }));
 app.use(cors({

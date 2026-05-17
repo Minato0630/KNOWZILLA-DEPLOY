@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -432,7 +432,10 @@
 
     <script>
         // Custom API base target for dev support
-        const API_BASE = (window.location.port && window.location.port !== '5000') || window.location.protocol === 'file:' ? 'http://localhost:5000' : '';
+        // On Vercel (production), API is same-origin. On localhost dev, always use port 5000.
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'http://localhost:5000'
+            : '';
         let fullLeaderboardData = [];
 
         setTimeout(() => document.getElementById('loader').style.display='none', 1000);
