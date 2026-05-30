@@ -32,6 +32,21 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000   // 24h in ms
   }
 }));
+
+// Ensure MongoDB connection is ready for each request (important for Vercel serverless)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection error on request:', err);
+    if (wantsJson(req)) {
+      return res.status(503).json({ error: 'Service unavailable: cannot connect to database.' });
+    }
+    // Fallback to HTML error page
+    return res.status(503).send('Service unavailable: cannot connect to database.');
+  }
+});
 app.use(cors({
   credentials: true,
   origin: function (origin, callback) {
